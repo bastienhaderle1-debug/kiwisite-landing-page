@@ -711,20 +711,15 @@ textarea:focus-visible,
 
   .nav-list {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 0.45rem;
-    overflow-x: auto;
-    padding-bottom: 0.2rem;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .nav-list::-webkit-scrollbar {
-    display: none;
+    overflow: visible;
+    padding-bottom: 0;
   }
 
   .nav-list li {
-    flex: 0 0 auto;
+    flex: 1 1 calc(33.333% - 0.45rem);
+    min-width: 0;
   }
 
   .nav-list a {
@@ -762,21 +757,15 @@ textarea:focus-visible,
   .contact-actions {
     width: 100%;
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 0.42rem;
-    overflow-x: auto;
-    padding-bottom: 0.1rem;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .contact-actions::-webkit-scrollbar {
-    display: none;
+    overflow: visible;
+    padding-bottom: 0;
   }
 
   .contact-actions a,
   .contact-actions .copy-btn {
-    flex: 0 0 auto;
+    flex: 1 1 calc(50% - 0.42rem);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -789,7 +778,8 @@ textarea:focus-visible,
     border: 1px solid rgba(131, 242, 143, 0.26);
     background:
       linear-gradient(135deg, rgba(131, 242, 143, 0.13), rgba(9, 16, 13, 0.68));
-    white-space: nowrap;
+    white-space: normal;
+    line-height: 1.2;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
   }
 
@@ -827,7 +817,10 @@ textarea:focus-visible,
 
   .review p,
   .difficulty-item p,
-  .faq-answer p {
+  .faq-answer p,
+  .contact-actions a,
+  .contact-actions .copy-btn,
+  .nav-list a {
     overflow-wrap: anywhere;
   }
 
@@ -865,6 +858,12 @@ textarea:focus-visible,
 
   .code-card pre {
     font-size: 0.82rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .code-card {
+    overflow-x: hidden;
   }
 
   .reviews-head {
