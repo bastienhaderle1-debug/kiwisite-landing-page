@@ -712,26 +712,62 @@ textarea:focus-visible,
   }
 
   .contact-bar-wrap p {
-    font-size: 0.95rem;
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #acc8ba;
+  }
+
+  .contact-bar {
+    background:
+      linear-gradient(110deg, rgba(20, 42, 31, 0.95), rgba(10, 16, 13, 0.98));
+    border-bottom-color: #2b4e3d;
+  }
+
+  .contact-bar-wrap {
+    gap: 0.38rem;
+    padding: 0.45rem 0 0.5rem;
   }
 
   .contact-actions {
     width: 100%;
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
+    flex-wrap: nowrap;
+    gap: 0.42rem;
+    overflow-x: auto;
+    padding-bottom: 0.1rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .contact-actions::-webkit-scrollbar {
+    display: none;
   }
 
   .contact-actions a,
   .contact-actions .copy-btn {
-    flex: 1 1 calc(50% - 0.45rem);
+    flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    min-height: 44px;
-    padding-inline: 0.55rem;
-    font-size: 0.95rem;
+    min-height: 2.35rem;
+    padding: 0.34rem 0.82rem;
+    font-size: 0.84rem;
+    font-weight: 600;
+    border-radius: 999px;
+    border: 1px solid rgba(131, 242, 143, 0.26);
+    background:
+      linear-gradient(135deg, rgba(131, 242, 143, 0.13), rgba(9, 16, 13, 0.68));
+    white-space: nowrap;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  }
+
+  .contact-actions a {
+    text-decoration: none;
   }
 
   .section {
