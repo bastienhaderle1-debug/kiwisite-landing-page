@@ -40,6 +40,69 @@
     });
   }
 
+  function initNavSectionHighlight() {
+    const navLinks = document.querySelectorAll('.site-header .nav-list a[href^="#"]');
+    if (!navLinks.length) return;
+
+    const sections = [];
+    const linksById = {};
+    let activeId = "";
+
+    navLinks.forEach(function (link) {
+      const hash = link.getAttribute("href");
+      if (!hash || hash.length < 2) return;
+      const id = hash.slice(1);
+      const section = document.getElementById(id);
+      if (!section) return;
+      sections.push(section);
+      linksById[id] = link;
+
+      link.addEventListener("click", function () {
+        setActive(id);
+      });
+    });
+
+    function setActive(id) {
+      if (!id || id === activeId || !linksById[id]) return;
+      activeId = id;
+      navLinks.forEach(function (link) {
+        link.classList.remove("is-active");
+        link.removeAttribute("aria-current");
+      });
+      linksById[id].classList.add("is-active");
+      linksById[id].setAttribute("aria-current", "page");
+    }
+
+    function updateActiveFromScroll() {
+      const header = document.querySelector(".site-header");
+      const headerOffset = header ? header.offsetHeight : 0;
+      const y = window.scrollY + headerOffset + 28;
+      let currentId = sections[0] ? sections[0].id : "";
+
+      sections.forEach(function (section) {
+        if (section.offsetTop <= y) {
+          currentId = section.id;
+        }
+      });
+
+      setActive(currentId);
+    }
+
+    let ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(function () {
+        updateActiveFromScroll();
+        ticking = false;
+      });
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    updateActiveFromScroll();
+  }
+
   function initFaqAccordion() {
     const buttons = document.querySelectorAll(".faq-question");
     buttons.forEach(function (button) {
@@ -251,6 +314,7 @@
   }
 
   initSmoothScroll();
+  initNavSectionHighlight();
   initFaqAccordion();
   initCopyButtons();
   initContactForm();
