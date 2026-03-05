@@ -3,7 +3,7 @@
   --bg-soft: #101814;
   --card: #131d18;
   --text: #e7f4ed;
-  --muted: #9db2a8;
+  --muted: #c2d4cb;
   --kiwi: #83f28f;
   --kiwi-strong: #4fdc73;
   --border: #254234;
@@ -24,12 +24,13 @@ html {
 body {
   margin: 0;
   font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(1rem, 0.96rem + 0.2vw, 1.08rem);
   color: var(--text);
   background:
     radial-gradient(circle at 15% 0%, #1a2f24 0, transparent 36%),
     radial-gradient(circle at 90% 10%, #193124 0, transparent 38%),
     var(--bg);
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 a {
@@ -214,6 +215,7 @@ h1 span {
 .hero-subtitle,
 .section-intro {
   color: var(--muted);
+  font-size: 1.05rem;
   max-width: 65ch;
 }
 
@@ -288,6 +290,31 @@ h1 span {
   padding: 0.3rem;
 }
 
+.difficulty-legend {
+  margin-top: 0.8rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.difficulty-legend-item {
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: var(--bg-soft);
+  padding: 0.7rem;
+  border-left: 3px solid var(--kiwi);
+}
+
+.difficulty-legend-item h3 {
+  margin: 0 0 0.2rem;
+  font-size: 0.95rem;
+  color: var(--kiwi);
+}
+
+.difficulty-legend-item p {
+  margin: 0;
+  color: var(--muted);
+}
+
 .difficulty-grid,
 .offers-grid,
 .value-grid {
@@ -316,6 +343,7 @@ h1 span {
 .conditions {
   margin: 0;
   color: var(--muted);
+  font-size: 1.02rem;
 }
 
 .offer-card .price {
@@ -365,7 +393,7 @@ h1 span {
 }
 
 .conditions {
-  font-size: 0.9rem;
+  font-size: 0.98rem;
   border-left: 3px solid var(--kiwi-strong);
   padding-left: 0.7rem;
 }
@@ -423,7 +451,7 @@ h1 span {
 .review-meta {
   margin-top: 0.5rem;
   color: #bdcec5;
-  font-size: 0.9rem;
+  font-size: 0.96rem;
 }
 
 .faq-list {
@@ -568,6 +596,10 @@ textarea:focus-visible,
 
   .difficulty-grid {
     grid-template-columns: 1fr;
+  }
+
+  .difficulty-legend {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .offers-grid {
