@@ -175,6 +175,8 @@
 
     let current = 0;
     const total = slides.length;
+    let touchStartX = 0;
+    let touchStartY = 0;
 
     function render(source) {
       trackEl.style.transform = "translateX(-" + current * 100 + "%)";
@@ -209,6 +211,32 @@
         goTo(current + 1, "keyboard_right");
       }
     });
+
+    focusZone.addEventListener(
+      "touchstart",
+      function (event) {
+        if (!event.touches || !event.touches.length) return;
+        touchStartX = event.touches[0].clientX;
+        touchStartY = event.touches[0].clientY;
+      },
+      { passive: true }
+    );
+
+    focusZone.addEventListener(
+      "touchend",
+      function (event) {
+        if (!event.changedTouches || !event.changedTouches.length) return;
+        const deltaX = event.changedTouches[0].clientX - touchStartX;
+        const deltaY = event.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(deltaX) < 36 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+        if (deltaX < 0) {
+          goTo(current + 1, "swipe_left");
+        } else {
+          goTo(current - 1, "swipe_right");
+        }
+      },
+      { passive: true }
+    );
 
     render("");
   }
