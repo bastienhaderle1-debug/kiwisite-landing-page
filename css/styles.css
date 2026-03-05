@@ -732,12 +732,29 @@ textarea:focus-visible,
     align-items: center;
     min-height: 1.78rem;
     text-align: center;
-    padding: 0.24rem 0.52rem;
+    justify-content: center;
+    padding: 0.22rem 0.5rem;
     font-size: 0.8rem;
     line-height: 1.1;
-    background: rgba(131, 242, 143, 0.08);
-    border: 1px solid rgba(131, 242, 143, 0.16);
-    border-radius: 0.62rem;
+    background:
+      linear-gradient(180deg, rgba(25, 38, 31, 0.9), rgba(13, 20, 16, 0.94));
+    border: 1px solid rgba(131, 242, 143, 0.2);
+    border-radius: 0.14rem;
+    box-shadow: inset 0 -1px 0 rgba(131, 242, 143, 0.18);
+  }
+
+  .nav-list a::after {
+    left: 0.35rem;
+    right: 0.35rem;
+    bottom: 0.16rem;
+    height: 1px;
+  }
+
+  .nav-list a:hover,
+  .nav-list a:focus-visible {
+    background:
+      linear-gradient(180deg, rgba(30, 46, 37, 0.95), rgba(16, 24, 20, 0.96));
+    border-color: rgba(131, 242, 143, 0.45);
   }
 
   .contact-bar-wrap p {
