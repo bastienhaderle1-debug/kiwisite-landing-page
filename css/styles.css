@@ -2,6 +2,7 @@
   --bg: #0a0f0d;
   --bg-soft: #101814;
   --card: #131d18;
+  --card-hover: #17241d;
   --text: #e7f4ed;
   --muted: #c2d4cb;
   --kiwi: #83f28f;
@@ -125,6 +126,29 @@ a:focus-visible {
   text-decoration: none;
   padding: 0.3rem 0.45rem;
   border-radius: 0.25rem;
+  position: relative;
+  transition: color 180ms ease, background-color 180ms ease;
+}
+
+.nav-list a::after {
+  content: "";
+  position: absolute;
+  left: 0.45rem;
+  right: 0.45rem;
+  bottom: 0.1rem;
+  height: 2px;
+  background: var(--kiwi);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms ease;
+}
+
+.nav-list a:hover {
+  background: rgba(131, 242, 143, 0.08);
+}
+
+.nav-list a:hover::after {
+  transform: scaleX(1);
 }
 
 .nav-list a:focus-visible {
@@ -168,6 +192,12 @@ a:focus-visible {
   padding: 0.5rem 0.75rem;
   font: inherit;
   cursor: pointer;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .copy-btn:hover,
@@ -178,6 +208,8 @@ a:focus-visible {
 .form-btn:focus-visible {
   border-color: var(--kiwi);
   color: var(--kiwi);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(79, 220, 115, 0.15);
 }
 
 .section {
@@ -226,6 +258,12 @@ h1 span {
 
 .proof-list li {
   margin-bottom: 0.4rem;
+  transition: color 160ms ease, transform 160ms ease;
+}
+
+.proof-list li:hover {
+  color: #d9ffe8;
+  transform: translateX(2px);
 }
 
 .code-card {
@@ -258,6 +296,13 @@ h1 span {
   padding: 0.65rem;
   display: grid;
   gap: 0.1rem;
+  transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.badge:hover {
+  transform: translateY(-2px);
+  border-color: var(--kiwi);
+  background: #15241d;
 }
 
 .badge-score {
@@ -333,6 +378,22 @@ h1 span {
   border-radius: 0.8rem;
   background: var(--card);
   padding: 0.95rem;
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background-color 220ms ease;
+}
+
+.difficulty-item:hover,
+.offer-card:hover,
+.value-grid article:hover,
+.review:hover,
+.faq-item:hover {
+  transform: translateY(-4px);
+  border-color: #3f7d5f;
+  background: var(--card-hover);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
 }
 
 .difficulty-item p,
@@ -390,6 +451,7 @@ h1 span {
 .stripe-btn:focus-visible {
   background: var(--kiwi);
   color: #0c130e;
+  box-shadow: 0 12px 28px rgba(79, 220, 115, 0.28);
 }
 
 .conditions {
@@ -425,6 +487,7 @@ h1 span {
   padding: 0;
   font-size: 1.05rem;
   line-height: 1;
+  font-weight: 700;
 }
 
 .reviews-carousel {
@@ -473,6 +536,11 @@ h1 span {
   padding: 0;
   font: inherit;
   cursor: pointer;
+  transition: color 170ms ease;
+}
+
+.faq-item:hover .faq-question {
+  color: var(--kiwi);
 }
 
 .faq-question::after {
@@ -553,6 +621,18 @@ textarea:focus-visible,
   color: var(--muted);
 }
 
+.hl {
+  color: #eaf7f0;
+  font-weight: 600;
+  background: linear-gradient(
+    to bottom,
+    transparent 72%,
+    rgba(131, 242, 143, 0.18) 72%
+  );
+  padding: 0 0.08em;
+  border-radius: 0.14em;
+}
+
 .disclaimer {
   font-size: 0.86rem;
 }
@@ -614,5 +694,14 @@ textarea:focus-visible,
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
   }
 }
