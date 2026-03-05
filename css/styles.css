@@ -660,58 +660,103 @@ textarea:focus-visible,
 
 @media (max-width: 719px) {
   .container {
-    width: min(100%, 94%);
+    width: min(100%, 93%);
   }
 
   .nav-wrap {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.6rem;
-    padding: 0.65rem 0 0.85rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.65rem 0;
+  }
+
+  .brand-text {
+    font-size: 1rem;
+  }
+
+  .nav-wrap nav {
+    grid-column: 1 / -1;
   }
 
   .nav-list {
-    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
     gap: 0.45rem;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .nav-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-list li {
+    flex: 0 0 auto;
   }
 
   .nav-list a {
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.1rem;
     text-align: center;
-    padding: 0.45rem 0.35rem;
+    padding: 0.42rem 0.7rem;
     background: rgba(131, 242, 143, 0.08);
     border: 1px solid rgba(131, 242, 143, 0.16);
-    border-radius: 0.45rem;
+    border-radius: 999px;
+  }
+
+  .contact-bar-wrap p {
+    font-size: 0.95rem;
   }
 
   .contact-actions {
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
   }
 
   .contact-actions a,
   .contact-actions .copy-btn {
+    flex: 1 1 calc(50% - 0.45rem);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     min-height: 44px;
+    padding-inline: 0.55rem;
+    font-size: 0.95rem;
   }
 
   .section {
-    padding: 2.5rem 0;
+    padding: 2.15rem 0;
   }
 
   h1 {
     max-width: 100%;
-    font-size: clamp(1.85rem, 7vw, 2.25rem);
+    font-size: clamp(1.85rem, 7.4vw, 2.25rem);
+    line-height: 1.14;
   }
 
   h2 {
-    font-size: 1.45rem;
+    font-size: 1.42rem;
+    line-height: 1.2;
+  }
+
+  .kicker {
+    font-size: 0.84rem;
+  }
+
+  .hero-grid,
+  .contact-grid,
+  .offers-grid,
+  .difficulty-grid,
+  .value-grid,
+  .faq-list {
+    gap: 0.9rem;
   }
 
   .hero-subtitle,
@@ -722,8 +767,8 @@ textarea:focus-visible,
   .faq-answer p,
   .offer-meta,
   .conditions {
-    font-size: 1.08rem;
-    line-height: 1.65;
+    font-size: 1.01rem;
+    line-height: 1.62;
   }
 
   .offer-card,
@@ -733,29 +778,47 @@ textarea:focus-visible,
   .faq-item,
   #contact-form,
   .difficulty-legend-item {
-    padding: 1.05rem;
+    padding: 1rem;
+    border-radius: 0.9rem;
+  }
+
+  .offer-card .price {
+    font-size: 1.85rem;
   }
 
   .offer-card ul {
-    padding-left: 1.1rem;
+    margin: 0.7rem 0 0.85rem;
+    padding-left: 1.08rem;
   }
 
   .code-card pre {
-    font-size: 0.88rem;
+    font-size: 0.82rem;
   }
 
   .reviews-head {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    row-gap: 0.45rem;
   }
 
   .reviews-controls {
-    align-self: flex-end;
+    margin-left: auto;
   }
 
   .reviews-arrow {
-    width: 2.4rem;
-    height: 2.4rem;
+    width: 2.3rem;
+    height: 2.3rem;
+  }
+
+  .reviews-counter {
+    text-align: right;
+    font-size: 0.92rem;
+  }
+
+  .difficulty-legend {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
   }
 
   .copy-btn,
@@ -764,6 +827,15 @@ textarea:focus-visible,
   input,
   textarea {
     min-height: 44px;
+  }
+
+  input,
+  textarea {
+    font-size: 1rem;
+  }
+
+  .site-footer p {
+    font-size: 0.95rem;
   }
 }
 
