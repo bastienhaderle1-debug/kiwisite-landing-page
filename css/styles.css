@@ -194,6 +194,35 @@ a:focus-visible {
   align-items: center;
 }
 
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.34rem;
+  text-decoration: none;
+}
+
+.contact-app-icon {
+  width: 0.82rem;
+  height: 0.82rem;
+  display: inline-flex;
+  color: var(--kiwi);
+  opacity: 0.92;
+}
+
+.contact-app-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.wa-link .contact-app-icon {
+  color: #65e98f;
+}
+
+.discord-link .contact-app-icon {
+  color: #9babff;
+}
+
 .copy-btn,
 .reviews-arrow,
 .stripe-btn,
