@@ -658,6 +658,115 @@ textarea:focus-visible,
   transform: translateX(-50%) translateY(0);
 }
 
+@media (max-width: 719px) {
+  .container {
+    width: min(100%, 94%);
+  }
+
+  .nav-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.65rem 0 0.85rem;
+  }
+
+  .nav-list {
+    width: 100%;
+    gap: 0.45rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .nav-list a {
+    display: block;
+    text-align: center;
+    padding: 0.45rem 0.35rem;
+    background: rgba(131, 242, 143, 0.08);
+    border: 1px solid rgba(131, 242, 143, 0.16);
+    border-radius: 0.45rem;
+  }
+
+  .contact-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .contact-actions a,
+  .contact-actions .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 44px;
+  }
+
+  .section {
+    padding: 2.5rem 0;
+  }
+
+  h1 {
+    max-width: 100%;
+    font-size: clamp(1.85rem, 7vw, 2.25rem);
+  }
+
+  h2 {
+    font-size: 1.45rem;
+  }
+
+  .hero-subtitle,
+  .section-intro,
+  .difficulty-item p,
+  .value-grid p,
+  .review p,
+  .faq-answer p,
+  .offer-meta,
+  .conditions {
+    font-size: 1.08rem;
+    line-height: 1.65;
+  }
+
+  .offer-card,
+  .difficulty-item,
+  .value-grid article,
+  .review,
+  .faq-item,
+  #contact-form,
+  .difficulty-legend-item {
+    padding: 1.05rem;
+  }
+
+  .offer-card ul {
+    padding-left: 1.1rem;
+  }
+
+  .code-card pre {
+    font-size: 0.88rem;
+  }
+
+  .reviews-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .reviews-controls {
+    align-self: flex-end;
+  }
+
+  .reviews-arrow {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  .copy-btn,
+  .stripe-btn,
+  .form-btn,
+  input,
+  textarea {
+    min-height: 44px;
+  }
+}
+
 @media (min-width: 720px) {
   .brand-logo {
     width: 2.4rem;
