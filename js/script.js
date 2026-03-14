@@ -313,6 +313,262 @@
     });
   }
 
+  function initSceneCardsInteraction() {
+    const mediaQuery = window.matchMedia("(min-width: 980px) and (pointer: fine)");
+    const cards = document.querySelectorAll(".scene-card");
+    if (!cards.length || !mediaQuery.matches) return;
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    cards.forEach(function (card) {
+      const baseZ = parseFloat(card.getAttribute("data-base-z") || "0");
+      const state = {
+        dragging: false,
+        spinning: false,
+        hoverX: 0,
+        hoverY: 0,
+        dragX: 0,
+        dragY: 0,
+        dragRotateX: 0,
+        dragRotateY: 0,
+        dragSpin: 0,
+        spinX: 0,
+        spinY: 0,
+        spinZ: 0,
+        wobbleX: 0,
+        wobbleY: 0,
+        pointerId: null,
+        startX: 0,
+        startY: 0,
+        lastX: 0,
+        lastY: 0,
+        lastTime: 0,
+        velocityX: 0,
+        velocityY: 0,
+        dragDistance: 0,
+        frameId: 0
+      };
+
+      function stopMomentum() {
+        if (state.frameId) {
+          window.cancelAnimationFrame(state.frameId);
+          state.frameId = 0;
+        }
+        state.spinning = false;
+        card.classList.remove("is-spinning");
+      }
+
+      function applyTransform() {
+        const rotateX = state.hoverX + state.dragX + state.dragRotateX + state.spinX + state.wobbleX;
+        const rotateY = state.hoverY + state.dragY + state.dragRotateY + state.spinY + state.wobbleY;
+        const scale = state.dragging ? 1.03 : 1;
+
+        card.style.setProperty("--card-z", baseZ + "deg");
+        card.style.setProperty("--card-spin", state.dragSpin + state.spinZ + "deg");
+        card.style.setProperty("--card-x", rotateX + "deg");
+        card.style.setProperty("--card-y", rotateY + "deg");
+        card.style.setProperty("--card-scale", String(scale));
+      }
+
+      function updateFromPointer(clientX, clientY, multiplier) {
+        const rect = card.getBoundingClientRect();
+        const px = (clientX - rect.left) / rect.width;
+        const py = (clientY - rect.top) / rect.height;
+        const rotateY = (px - 0.5) * 24 * multiplier;
+        const rotateX = (0.5 - py) * 24 * multiplier;
+
+        if (state.dragging) {
+          const now = performance.now();
+          const dt = state.lastTime ? Math.max(16, now - state.lastTime) : 16;
+          const dx = clientX - state.lastX;
+          const dy = clientY - state.lastY;
+
+          state.velocityX = dx / dt;
+          state.velocityY = dy / dt;
+          state.dragDistance += Math.hypot(dx, dy);
+          state.lastX = clientX;
+          state.lastY = clientY;
+          state.lastTime = now;
+          state.dragX = rotateX;
+          state.dragY = rotateY;
+          state.dragRotateX = (state.startY - clientY) * 0.95;
+          state.dragRotateY = (clientX - state.startX) * 0.95;
+          state.dragSpin = clamp(
+            (clientX - state.startX) * 0.55 + (state.startY - clientY) * 0.22,
+            -540,
+            540
+          );
+        } else {
+          state.hoverX = rotateX;
+          state.hoverY = rotateY;
+        }
+
+        applyTransform();
+      }
+
+      function settleToRest() {
+        stopMomentum();
+        state.hoverX = 0;
+        state.hoverY = 0;
+        state.dragX = 0;
+        state.dragY = 0;
+        state.dragRotateX = 0;
+        state.dragRotateY = 0;
+        state.dragSpin = 0;
+        state.spinX = 0;
+        state.spinY = 0;
+        state.spinZ = 0;
+        state.wobbleX = 0;
+        state.wobbleY = 0;
+        state.dragging = false;
+        state.pointerId = null;
+        card.classList.remove("is-dragging");
+        applyTransform();
+      }
+
+      function startMomentum() {
+        const speed = Math.hypot(state.velocityX, state.velocityY);
+        const distancePower = clamp(state.dragDistance * 0.014, 0, 7);
+        const speedPower = clamp(speed * 34, 0, 22);
+        const directionBase = state.velocityX + state.velocityY * 0.28;
+        const direction = directionBase === 0 ? (state.dragSpin >= 0 ? 1 : -1) : Math.sign(directionBase);
+        let angularVelocity = direction * (speedPower + distancePower);
+        const wobblePower = clamp(speed * 18 + state.dragDistance * 0.01, 0, 20);
+        let spinXVelocity = clamp(
+          state.velocityY * -165 + state.dragRotateX * 0.09,
+          -52,
+          52
+        );
+        let spinYVelocity = clamp(
+          state.velocityX * 165 + state.dragRotateY * 0.09,
+          -52,
+          52
+        );
+        let wobbleXVelocity = clamp(state.dragX * 0.24 + state.velocityY * -18, -wobblePower, wobblePower);
+        let wobbleYVelocity = clamp(state.dragY * 0.24 + state.velocityX * 18, -wobblePower, wobblePower);
+        let lastTick = performance.now();
+
+        state.dragging = false;
+        state.pointerId = null;
+        state.dragX = 0;
+        state.dragY = 0;
+        state.dragRotateX = 0;
+        state.dragRotateY = 0;
+        state.dragSpin = 0;
+        state.hoverX = 0;
+        state.hoverY = 0;
+        card.classList.remove("is-dragging");
+        card.classList.add("is-spinning");
+        state.spinning = true;
+
+        if (Math.abs(angularVelocity) < 1.1 && wobblePower < 2.8) {
+          settleToRest();
+          return;
+        }
+
+        function tick(now) {
+          const dt = Math.min(28, now - lastTick || 16);
+          const frame = dt / 16.67;
+          lastTick = now;
+
+          state.spinX += spinXVelocity * frame;
+          state.spinY += spinYVelocity * frame;
+          state.spinZ += angularVelocity * frame;
+          state.wobbleX += wobbleXVelocity * frame;
+          state.wobbleY += wobbleYVelocity * frame;
+
+          spinXVelocity *= Math.pow(0.972, frame);
+          spinYVelocity *= Math.pow(0.972, frame);
+          angularVelocity *= Math.pow(0.965, frame);
+          wobbleXVelocity *= Math.pow(0.93, frame);
+          wobbleYVelocity *= Math.pow(0.93, frame);
+
+          state.wobbleX *= Math.pow(0.985, frame);
+          state.wobbleY *= Math.pow(0.985, frame);
+
+          applyTransform();
+
+          if (
+            Math.abs(spinXVelocity) < 0.16 &&
+            Math.abs(spinYVelocity) < 0.16 &&
+            Math.abs(angularVelocity) < 0.18 &&
+            Math.abs(wobbleXVelocity) < 0.12 &&
+            Math.abs(wobbleYVelocity) < 0.12 &&
+            Math.abs(state.wobbleX) < 0.4 &&
+            Math.abs(state.wobbleY) < 0.4
+          ) {
+            settleToRest();
+            return;
+          }
+
+          state.frameId = window.requestAnimationFrame(tick);
+        }
+
+        state.frameId = window.requestAnimationFrame(tick);
+      }
+
+      card.addEventListener("pointermove", function (event) {
+        if (state.dragging && event.pointerId === state.pointerId) {
+          updateFromPointer(event.clientX, event.clientY, 2);
+        } else if (!state.dragging) {
+          updateFromPointer(event.clientX, event.clientY, 1);
+        }
+      });
+
+      card.addEventListener("pointerenter", function (event) {
+        if (!state.dragging) {
+          updateFromPointer(event.clientX, event.clientY, 1);
+        }
+      });
+
+      card.addEventListener("pointerleave", function () {
+        if (!state.dragging && !state.spinning) {
+          settleToRest();
+        }
+      });
+
+      card.addEventListener("pointerdown", function (event) {
+        stopMomentum();
+        state.dragging = true;
+        state.pointerId = event.pointerId;
+        state.startX = event.clientX;
+        state.startY = event.clientY;
+        state.lastX = event.clientX;
+        state.lastY = event.clientY;
+        state.lastTime = performance.now();
+        state.velocityX = 0;
+        state.velocityY = 0;
+        state.dragDistance = 0;
+        state.dragSpin = 0;
+        state.dragRotateX = 0;
+        state.dragRotateY = 0;
+        state.spinX = 0;
+        state.spinY = 0;
+        state.spinZ = 0;
+        state.wobbleX = 0;
+        state.wobbleY = 0;
+        card.classList.add("is-dragging");
+        if (card.setPointerCapture) {
+          card.setPointerCapture(event.pointerId);
+        }
+        updateFromPointer(event.clientX, event.clientY, 2);
+      });
+
+      card.addEventListener("pointerup", function (event) {
+        if (card.releasePointerCapture && state.pointerId === event.pointerId) {
+          try {
+            card.releasePointerCapture(event.pointerId);
+          } catch (_err) {}
+        }
+        startMomentum();
+      });
+
+      card.addEventListener("pointercancel", settleToRest);
+    });
+  }
+
   initSmoothScroll();
   initNavSectionHighlight();
   initFaqAccordion();
@@ -320,4 +576,5 @@
   initContactForm();
   initReviewsCarousel();
   initStripeLinksTracking();
+  initSceneCardsInteraction();
 })();
