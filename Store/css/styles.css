@@ -1203,6 +1203,43 @@ h1 span {
   min-height: 100%;
 }
 
+.offer-toggle {
+  list-style: none;
+  cursor: pointer;
+}
+
+.offer-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.offer-toggle::marker {
+  display: none;
+}
+
+.offer-toggle:focus-visible {
+  outline: 2px solid var(--kiwi);
+  outline-offset: 4px;
+}
+
+.offer-toggle .offer-audience,
+.offer-toggle .price {
+  display: block;
+  margin: 0;
+}
+
+.offer-name {
+  display: block;
+  margin: 0 0 0.7rem;
+  color: #f4fff8;
+  font-size: 1.24rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.offer-details {
+  display: grid;
+}
+
 .difficulty-item:hover,
 .offer-card:hover,
 .value-grid article:hover,
@@ -1608,6 +1645,7 @@ textarea {
 input:focus-visible,
 textarea:focus-visible,
 .faq-question:focus-visible,
+.offer-toggle:focus-visible,
 .stripe-btn:focus-visible,
 .reviews-arrow:focus-visible {
   outline: 2px solid var(--kiwi);
@@ -1995,32 +2033,56 @@ textarea:focus-visible,
 
   .offers-grid {
     grid-template-columns: 1fr;
-    gap: 0.9rem;
+    gap: 0.65rem;
     align-items: stretch;
   }
 
   .section {
-    padding: 2.15rem 0;
+    padding: 1.55rem 0;
+  }
+
+  .offers-section {
+    padding-top: 1.35rem;
+  }
+
+  .offers-lead {
+    margin-bottom: 0.85rem;
   }
 
   h1 {
     max-width: 100%;
-    font-size: clamp(1.85rem, 7.4vw, 2.25rem);
-    line-height: 1.14;
+    font-size: clamp(1.62rem, 7vw, 2.05rem);
+    line-height: 1.12;
   }
 
   .hero-title {
-    font-size: clamp(1.75rem, 7vw, 2.35rem);
+    font-size: clamp(1.55rem, 6.6vw, 2.05rem);
     max-width: 100%;
+    margin-bottom: 0.38rem;
   }
 
   h2 {
-    font-size: 1.42rem;
+    font-size: 1.24rem;
     line-height: 1.2;
   }
 
   .kicker {
-    font-size: 0.84rem;
+    font-size: 0.74rem;
+  }
+
+  .offers-section .hero-subtitle,
+  .offers-section .section-intro {
+    display: none;
+  }
+
+  .lead-points {
+    gap: 0.38rem;
+    margin-top: 0.72rem;
+  }
+
+  .lead-points span {
+    padding: 0.28rem 0.56rem;
+    font-size: 0.76rem;
   }
 
   .hero-grid,
@@ -2029,7 +2091,7 @@ textarea:focus-visible,
   .trust-grid,
   .value-grid,
   .faq-list {
-    gap: 0.9rem;
+    gap: 0.72rem;
   }
 
   .review p,
@@ -2049,8 +2111,8 @@ textarea:focus-visible,
   .faq-answer p,
   .offer-meta,
   .conditions {
-    font-size: 1.01rem;
-    line-height: 1.62;
+    font-size: 0.93rem;
+    line-height: 1.48;
   }
 
   .offer-card,
@@ -2062,65 +2124,144 @@ textarea:focus-visible,
   .difficulty-legend-item,
   .trust-item,
   .proof-stats article {
-    padding: 1rem;
-    border-radius: 0.9rem;
+    padding: 0.82rem;
+    border-radius: 0.82rem;
   }
 
   .offer-card {
-    padding: 1rem;
-    border-radius: 0.9rem;
+    padding: 0.82rem;
+    border-radius: 0.82rem;
     min-height: 100%;
   }
 
   .offer-card.featured {
-    transform: translateY(-0.2rem);
+    transform: none;
     box-shadow: 0 0 0 1px var(--accent-ring), var(--shadow);
   }
 
-  .offer-audience {
-    margin: 0 0 0.45rem;
-    font-size: 0.8rem;
-    line-height: 1.3;
-    letter-spacing: 0.08em;
+  .offer-toggle {
+    position: relative;
+    padding-right: 2.5rem;
   }
 
-  .offer-card h3 {
-    margin: 0 0 0.7rem;
-    font-size: 1.17rem;
-    line-height: 1.2;
+  .offer-toggle::after {
+    content: "+";
+    position: absolute;
+    top: 0.15rem;
+    right: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: rgba(131, 242, 143, 0.08);
+    color: var(--kiwi);
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .offer-card[open] .offer-toggle::after {
+    content: "-";
+  }
+
+  .offer-audience {
+    margin: 0 0 0.2rem;
+    font-size: 0.67rem;
+    line-height: 1.25;
+    letter-spacing: 0.1em;
+  }
+
+  .offer-name {
+    margin: 0 0 0.36rem;
+    font-size: 1.02rem;
+    line-height: 1.16;
     overflow-wrap: anywhere;
   }
 
   .offer-card .price {
-    margin: 0.3rem 0;
-    gap: 0.6rem;
+    margin: 0;
+    gap: 0.45rem;
     align-items: baseline;
   }
 
   .price-old {
-    font-size: 1rem;
+    font-size: 0.88rem;
     text-decoration-thickness: 2px;
   }
 
   .price-now {
-    font-size: 1.85rem;
-    line-height: 1.1;
+    font-size: 1.55rem;
+    line-height: 1;
+  }
+
+  .offer-details {
+    margin-top: 0.65rem;
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 0;
   }
 
   .offer-summary {
-    margin: 0 0 0.7rem;
-    font-size: 0.97rem;
-    line-height: 1.55;
-    display: block;
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
     overflow: visible;
   }
 
   .offer-meta {
     display: block;
+    font-size: 0.84rem;
   }
 
-  .offer-card ul {
-    display: none;
+  .offer-card .offer-details ul {
+    display: grid;
+    gap: 0.34rem;
+    margin: 0.58rem 0 0.65rem;
+    padding-left: 1rem;
+    font-size: 0.87rem;
+    line-height: 1.38;
+    color: var(--muted);
+  }
+
+  .offer-card li {
+    margin: 0;
+  }
+
+  .offer-note {
+    margin: 0 0 0.6rem;
+    font-size: 0.78rem;
+  }
+
+  .offer-card .stripe-btn {
+    width: 100%;
+    margin-top: 0;
+    padding: 0.62rem 0.72rem;
+    font-size: 0.9rem;
+  }
+
+  .offer-guarantee {
+    margin-top: 0.82rem;
+    padding: 0.82rem 0.78rem;
+    border-radius: 0.82rem;
+  }
+
+  .offer-guarantee-title {
+    font-size: clamp(0.94rem, 4.5vw, 1.08rem);
+  }
+
+  .offer-guarantee-text {
+    font-size: 0.8rem;
+  }
+
+  .proof-panel {
+    gap: 0.8rem;
+    padding: 0.95rem;
+    border-radius: 0.88rem;
+  }
+
+  .proof-stats {
+    gap: 0.58rem;
   }
 
   .code-card pre {
@@ -2137,6 +2278,15 @@ textarea:focus-visible,
     margin-bottom: 0.2rem;
   }
 
+  .reviews-carousel {
+    margin-top: 0.72rem;
+    border-radius: 0.82rem;
+  }
+
+  .reviews-controls {
+    display: none;
+  }
+
   .reviews-controls {
     padding-inline: 0.18rem;
   }
@@ -2147,14 +2297,31 @@ textarea:focus-visible,
     font-size: 0.95rem;
   }
 
+  .review-slide {
+    padding-inline: 2.1rem;
+  }
+
   .reviews-counter {
     text-align: center;
-    font-size: 0.92rem;
+    font-size: 0.84rem;
   }
 
   .difficulty-legend {
     grid-template-columns: 1fr;
-    gap: 0.55rem;
+    gap: 0.5rem;
+  }
+
+  .contact-list {
+    margin-top: 0.75rem;
+    gap: 0.38rem;
+  }
+
+  form {
+    gap: 0.45rem;
+  }
+
+  label {
+    font-size: 0.9rem;
   }
 
   .copy-btn,
@@ -2168,10 +2335,11 @@ textarea:focus-visible,
   input,
   textarea {
     font-size: 1rem;
+    padding: 0.55rem;
   }
 
   .site-footer p {
-    font-size: 0.95rem;
+    font-size: 0.88rem;
   }
 }
 

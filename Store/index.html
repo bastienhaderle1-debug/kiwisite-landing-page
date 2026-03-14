@@ -196,96 +196,114 @@
             seul but : vous livrer un site qui donne envie de vous contacter.
           </p>
           <div class="offers-grid">
-            <article class="offer-card">
-              <p class="offer-audience">Idéal pour débuter vite</p>
-              <h3>Formule Basique</h3>
-              <p class="price">
-                <span class="price-old">120€</span>
-                <span class="price-now">60€</span>
-              </p>
-              <p class="offer-summary">
-                Une landing page simple, nette et efficace pour commencer sans
-                vous perdre dans un gros projet.
-              </p>
-              <p class="offer-meta">Difficulté : 1 à 2 • Délai : 2 à 5 jours</p>
-              <ul>
-                <li>1 landing page claire et impactante</li>
-                <li>Formulaire ou lien de contact direct</li>
-                <li>Responsive mobile et desktop</li>
-                <li>Base SEO technique propre</li>
-                <li>Structure lisible et facile à faire évoluer</li>
-              </ul>
-              <p class="offer-note">Paiement sécurisé via Stripe.</p>
-              <a
-                class="stripe-btn"
-                href="STRIPE_LINK_STARTER"
-                target="_blank"
-                rel="noopener"
-                aria-label="Réserver l'offre Essentiel Launch sur Stripe"
-                >Choisir sur Stripe</a
-              >
-            </article>
+            <details class="offer-card" data-offer-card data-offer-name="Formule Basique" open>
+              <summary class="offer-toggle">
+                <span class="offer-audience">Idéal pour débuter</span>
+                <span class="offer-name" role="heading" aria-level="3">Formule Basique</span>
+                <span class="price" role="text">
+                  <span class="price-old">120€</span>
+                  <span class="price-now">60€</span>
+                </span>
+              </summary>
+              <div class="offer-details">
+                <p class="offer-summary">
+                  Une landing page simple, nette et efficace pour commencer sans
+                  vous perdre dans un gros projet.
+                </p>
+                <p class="offer-meta">Difficulté : 1 à 2 • Délai : 2 à 5 jours</p>
+                <ul>
+                  <li>1 landing page claire et impactante</li>
+                  <li>Formulaire ou lien de contact direct</li>
+                  <li>Responsive mobile et desktop</li>
+                  <li>Base SEO technique propre</li>
+                  <li>Structure lisible et facile à faire évoluer</li>
+                </ul>
+                <p class="offer-note">Paiement sécurisé via Stripe.</p>
+                <a
+                  class="stripe-btn"
+                  href="STRIPE_LINK_STARTER"
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="Réserver l'offre Essentiel Launch sur Stripe"
+                  >Choisir sur Stripe</a
+                >
+              </div>
+            </details>
 
-            <article class="offer-card featured" id="formule-supra">
-              <p class="offer-audience">Le meilleur équilibre</p>
-              <h3>Formule Supra</h3>
-              <p class="price">
-                <span class="price-old">350€</span>
-                <span class="price-now">200€</span>
-              </p>
-              <p class="offer-summary">
-                La formule la plus rentable si vous voulez un vrai site vitrine
-                pro qui rassure et convertit.
-              </p>
-              <p class="offer-meta">Difficulté : 2 à 4 • Délai : 4 à 8 jours</p>
-              <ul>
-                <li>Site vitrine multi-pages (jusqu'à 6 pages)</li>
-                <li>SEO de base sur les pages stratégiques</li>
-                <li>Formulaires de contact qualifiés</li>
-                <li>Intégrations simples (Maps, Analytics)</li>
-                <li>Architecture solide pour grandir</li>
-              </ul>
-              <p class="offer-note">Paiement sécurisé via Stripe.</p>
-              <a
-                class="stripe-btn"
-                href="STRIPE_LINK_PRO"
-                target="_blank"
-                rel="noopener"
-                aria-label="Réserver l'offre Croissance Sur-Mesure sur Stripe"
-                >Choisir sur Stripe</a
-              >
-            </article>
+            <details
+              class="offer-card featured"
+              id="formule-supra"
+              data-offer-card
+              data-offer-name="Formule Supra"
+              open
+            >
+              <summary class="offer-toggle">
+                <span class="offer-audience">Le meilleur équilibre</span>
+                <span class="offer-name" role="heading" aria-level="3">Formule Supra</span>
+                <span class="price" role="text">
+                  <span class="price-old">350€</span>
+                  <span class="price-now">200€</span>
+                </span>
+              </summary>
+              <div class="offer-details">
+                <p class="offer-summary">
+                  La formule la plus rentable si vous voulez un vrai site vitrine
+                  pro qui rassure et convertit.
+                </p>
+                <p class="offer-meta">Difficulté : 2 à 4 • Délai : 4 à 8 jours</p>
+                <ul>
+                  <li>Site vitrine multi-pages (jusqu'à 6 pages)</li>
+                  <li>SEO de base sur les pages stratégiques</li>
+                  <li>Formulaires de contact qualifiés</li>
+                  <li>Intégrations simples (Maps, Analytics)</li>
+                  <li>Architecture solide pour grandir</li>
+                </ul>
+                <p class="offer-note">Paiement sécurisé via Stripe.</p>
+                <a
+                  class="stripe-btn"
+                  href="STRIPE_LINK_PRO"
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="Réserver l'offre Croissance Sur-Mesure sur Stripe"
+                  >Choisir sur Stripe</a
+                >
+              </div>
+            </details>
 
-            <article class="offer-card">
-              <p class="offer-audience">Pour un projet ambitieux</p>
-              <h3>Formule Gold</h3>
-              <p class="price">
-                <span class="price-old">900€</span>
-                <span class="price-now">500€</span>
-              </p>
-              <p class="offer-summary">
-                Pour les besoins plus lourds, avec plus de personnalisation, de
-                SEO et de marge pour évoluer.
-              </p>
-              <p class="offer-meta">Difficulté : 4 à 5 • Délai : prioritaire</p>
-              <ul>
-                <li>Pour les professionnels</li>
-                <li>SEO avancé</li>
-                <li>Fonctionnalités métier sur-mesure</li>
-                <li>Infrastructure puissante (millier de visiteurs en simultané)</li>
-                <li>Personnalisations avancées</li>
-                <li>Base robuste prévue pour des évolutions futures</li>
-              </ul>
-              <p class="offer-note">Paiement sécurisé via Stripe.</p>
-              <a
-                class="stripe-btn"
-                href="STRIPE_LINK_PREMIUM"
-                target="_blank"
-                rel="noopener"
-                aria-label="Réserver l'offre Signature Prioritaire sur Stripe"
-                >Choisir sur Stripe</a
-              >
-            </article>
+            <details class="offer-card" data-offer-card data-offer-name="Formule Gold" open>
+              <summary class="offer-toggle">
+                <span class="offer-audience">Pour un projet ambitieux</span>
+                <span class="offer-name" role="heading" aria-level="3">Formule Gold</span>
+                <span class="price" role="text">
+                  <span class="price-old">900€</span>
+                  <span class="price-now">500€</span>
+                </span>
+              </summary>
+              <div class="offer-details">
+                <p class="offer-summary">
+                  Pour les besoins plus lourds, avec plus de personnalisation, de
+                  SEO et de marge pour évoluer.
+                </p>
+                <p class="offer-meta">Difficulté : 4 à 5 • Délai : prioritaire</p>
+                <ul>
+                  <li>Pour les professionnels</li>
+                  <li>SEO avancé</li>
+                  <li>Fonctionnalités métier sur-mesure</li>
+                  <li>Infrastructure puissante (millier de visiteurs en simultané)</li>
+                  <li>Personnalisations avancées</li>
+                  <li>Base robuste prévue pour des évolutions futures</li>
+                </ul>
+                <p class="offer-note">Paiement sécurisé via Stripe.</p>
+                <a
+                  class="stripe-btn"
+                  href="STRIPE_LINK_PREMIUM"
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="Réserver l'offre Signature Prioritaire sur Stripe"
+                  >Choisir sur Stripe</a
+                >
+              </div>
+            </details>
           </div>
           <div class="offer-guarantee">
             <p class="offer-guarantee-title">

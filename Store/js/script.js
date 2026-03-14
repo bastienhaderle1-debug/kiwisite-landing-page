@@ -238,6 +238,74 @@
     setOpen(false);
   }
 
+  function initMobileOfferCards() {
+    const cards = document.querySelectorAll("[data-offer-card]");
+    if (!cards.length) return;
+
+    const mobileQuery = window.matchMedia("(max-width: 719px)");
+    let syncingState = false;
+
+    function setDesktopState() {
+      syncingState = true;
+      cards.forEach(function (card) {
+        card.open = true;
+      });
+      syncingState = false;
+    }
+
+    function setMobileState() {
+      syncingState = true;
+      cards.forEach(function (card) {
+        card.open = false;
+      });
+      syncingState = false;
+    }
+
+    cards.forEach(function (card) {
+      card.addEventListener("toggle", function () {
+        if (!mobileQuery.matches || syncingState) return;
+
+        const offerName =
+          card.getAttribute("data-offer-name") ||
+          (card.querySelector(".offer-name") ? card.querySelector(".offer-name").textContent.trim() : "");
+
+        if (card.open) {
+          cards.forEach(function (otherCard) {
+            if (otherCard !== card) {
+              otherCard.open = false;
+            }
+          });
+        }
+
+        track("offer_toggle", {
+          offer: offerName,
+          expanded: card.open
+        });
+      });
+    });
+
+    function syncOfferCards(event) {
+      if (event && event.matches === false) {
+        setDesktopState();
+        return;
+      }
+
+      if (mobileQuery.matches) {
+        setMobileState();
+      } else {
+        setDesktopState();
+      }
+    }
+
+    if (typeof mobileQuery.addEventListener === "function") {
+      mobileQuery.addEventListener("change", syncOfferCards);
+    } else if (typeof mobileQuery.addListener === "function") {
+      mobileQuery.addListener(syncOfferCards);
+    }
+
+    syncOfferCards();
+  }
+
   function clearErrors(form) {
     const errors = form.querySelectorAll(".form-error");
     errors.forEach(function (err) {
@@ -662,6 +730,7 @@
   initFaqAccordion();
   initCopyButtons();
   initMobileContactFab();
+  initMobileOfferCards();
   initContactForm();
   initReviewsCarousel();
   initStripeLinksTracking();
