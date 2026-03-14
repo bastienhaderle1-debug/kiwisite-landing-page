@@ -104,18 +104,31 @@
   }
 
   function initFaqAccordion() {
-    const buttons = document.querySelectorAll(".faq-question");
-    buttons.forEach(function (button) {
-      button.addEventListener("click", function () {
-        const isExpanded = button.getAttribute("aria-expanded") === "true";
-        const targetId = button.getAttribute("aria-controls");
-        if (!targetId) return;
-        const panel = document.getElementById(targetId);
-        if (!panel) return;
+    function toggleFaq(button) {
+      const isExpanded = button.getAttribute("aria-expanded") === "true";
+      const targetId = button.getAttribute("aria-controls");
+      if (!targetId) return;
+      const panel = document.getElementById(targetId);
+      if (!panel) return;
 
-        button.setAttribute("aria-expanded", String(!isExpanded));
-        panel.hidden = isExpanded;
-        track("faq_toggle", { id: targetId, expanded: !isExpanded });
+      button.setAttribute("aria-expanded", String(!isExpanded));
+      panel.hidden = isExpanded;
+      track("faq_toggle", { id: targetId, expanded: !isExpanded });
+    }
+
+    const items = document.querySelectorAll(".faq-item");
+    items.forEach(function (item) {
+      const button = item.querySelector(".faq-question");
+      if (!button) return;
+
+      button.addEventListener("click", function () {
+        toggleFaq(button);
+      });
+
+      item.addEventListener("click", function (event) {
+        if (event.target.closest(".faq-answer")) return;
+        if (event.target.closest(".faq-question")) return;
+        toggleFaq(button);
       });
     });
   }
@@ -148,6 +161,73 @@
         copyText(value);
       });
     });
+  }
+
+  function initMobileContactFab() {
+    const contactBar = document.querySelector(".contact-bar");
+    if (!contactBar) return;
+
+    const toggle = contactBar.querySelector(".contact-fab-toggle");
+    const panel = contactBar.querySelector(".contact-panel");
+    if (!toggle || !panel) return;
+
+    const mobileQuery = window.matchMedia("(max-width: 719px)");
+
+    function setOpen(nextOpen) {
+      contactBar.classList.toggle("is-open", nextOpen);
+      toggle.setAttribute("aria-expanded", String(nextOpen));
+      toggle.setAttribute(
+        "aria-label",
+        nextOpen ? "Fermer les moyens de contact" : "Ouvrir les moyens de contact"
+      );
+    }
+
+    function closePanel() {
+      setOpen(false);
+    }
+
+    toggle.addEventListener("click", function () {
+      if (!mobileQuery.matches) return;
+      const nextOpen = !contactBar.classList.contains("is-open");
+      setOpen(nextOpen);
+      track("contact_fab_toggle", { expanded: nextOpen });
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!mobileQuery.matches || !contactBar.classList.contains("is-open")) return;
+      if (contactBar.contains(event.target)) return;
+      closePanel();
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closePanel();
+      }
+    });
+
+    panel.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        if (mobileQuery.matches) {
+          closePanel();
+        }
+      });
+    });
+
+    if (typeof mobileQuery.addEventListener === "function") {
+      mobileQuery.addEventListener("change", function (event) {
+        if (!event.matches) {
+          closePanel();
+        }
+      });
+    } else if (typeof mobileQuery.addListener === "function") {
+      mobileQuery.addListener(function (event) {
+        if (!event.matches) {
+          closePanel();
+        }
+      });
+    }
+
+    setOpen(false);
   }
 
   function clearErrors(form) {
@@ -573,6 +653,7 @@
   initNavSectionHighlight();
   initFaqAccordion();
   initCopyButtons();
+  initMobileContactFab();
   initContactForm();
   initReviewsCarousel();
   initStripeLinksTracking();
