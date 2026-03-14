@@ -306,7 +306,7 @@
           "\n"
       );
 
-      window.location.href = "mailto:hello@kiwisite.fr?subject=" + subject + "&body=" + body;
+      window.location.href = "mailto:kiwisitebuilder@gmail.com?subject=" + subject + "&body=" + body;
       showToast("Ouverture de votre client mail");
       track("contact_submit", { name: name, email: email });
     });

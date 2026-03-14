@@ -30,7 +30,7 @@ par vos vraies URLs Stripe.
 
 Dans `index.html`, mettre à jour :
 
-- `hello@kiwisite.fr`
+- `kiwisitebuilder@gmail.com`
 - `https://wa.me/33612345678`
 - `https://instagram.com/kiwisite`
 
