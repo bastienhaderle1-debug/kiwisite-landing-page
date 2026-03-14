@@ -393,12 +393,12 @@
           state.lastTime = now;
           state.dragX = rotateX;
           state.dragY = rotateY;
-          state.dragRotateX = (state.startY - clientY) * 0.95;
-          state.dragRotateY = (clientX - state.startX) * 0.95;
+          state.dragRotateX = (state.startY - clientY) * 0.48;
+          state.dragRotateY = (clientX - state.startX) * 0.48;
           state.dragSpin = clamp(
-            (clientX - state.startX) * 0.55 + (state.startY - clientY) * 0.22,
-            -540,
-            540
+            (clientX - state.startX) * 0.22 + (state.startY - clientY) * 0.08,
+            -220,
+            220
           );
         } else {
           state.hoverX = rotateX;
@@ -430,24 +430,24 @@
 
       function startMomentum() {
         const speed = Math.hypot(state.velocityX, state.velocityY);
-        const distancePower = clamp(state.dragDistance * 0.014, 0, 7);
-        const speedPower = clamp(speed * 34, 0, 22);
+        const distancePower = clamp(state.dragDistance * 0.003, 0, 1.92);
+        const speedPower = clamp(speed * 9.6, 0, 6);
         const directionBase = state.velocityX + state.velocityY * 0.28;
         const direction = directionBase === 0 ? (state.dragSpin >= 0 ? 1 : -1) : Math.sign(directionBase);
         let angularVelocity = direction * (speedPower + distancePower);
-        const wobblePower = clamp(speed * 18 + state.dragDistance * 0.01, 0, 20);
+        const wobblePower = clamp(speed * 6 + state.dragDistance * 0.0024, 0, 6);
         let spinXVelocity = clamp(
-          state.velocityY * -165 + state.dragRotateX * 0.09,
-          -52,
-          52
+          state.velocityY * -43.2 + state.dragRotateX * 0.0168,
+          -10.8,
+          10.8
         );
         let spinYVelocity = clamp(
-          state.velocityX * 165 + state.dragRotateY * 0.09,
-          -52,
-          52
+          state.velocityX * 43.2 + state.dragRotateY * 0.0168,
+          -10.8,
+          10.8
         );
-        let wobbleXVelocity = clamp(state.dragX * 0.24 + state.velocityY * -18, -wobblePower, wobblePower);
-        let wobbleYVelocity = clamp(state.dragY * 0.24 + state.velocityX * 18, -wobblePower, wobblePower);
+        let wobbleXVelocity = clamp(state.dragX * 0.084 + state.velocityY * -4.8, -wobblePower, wobblePower);
+        let wobbleYVelocity = clamp(state.dragY * 0.084 + state.velocityX * 4.8, -wobblePower, wobblePower);
         let lastTick = performance.now();
 
         state.dragging = false;
@@ -463,7 +463,7 @@
         card.classList.add("is-spinning");
         state.spinning = true;
 
-        if (Math.abs(angularVelocity) < 1.1 && wobblePower < 2.8) {
+        if (Math.abs(angularVelocity) < 0.9 && wobblePower < 1.8) {
           settleToRest();
           return;
         }
@@ -479,11 +479,11 @@
           state.wobbleX += wobbleXVelocity * frame;
           state.wobbleY += wobbleYVelocity * frame;
 
-          spinXVelocity *= Math.pow(0.972, frame);
-          spinYVelocity *= Math.pow(0.972, frame);
-          angularVelocity *= Math.pow(0.965, frame);
-          wobbleXVelocity *= Math.pow(0.93, frame);
-          wobbleYVelocity *= Math.pow(0.93, frame);
+          spinXVelocity *= Math.pow(0.952, frame);
+          spinYVelocity *= Math.pow(0.952, frame);
+          angularVelocity *= Math.pow(0.947, frame);
+          wobbleXVelocity *= Math.pow(0.9, frame);
+          wobbleYVelocity *= Math.pow(0.9, frame);
 
           state.wobbleX *= Math.pow(0.985, frame);
           state.wobbleY *= Math.pow(0.985, frame);
@@ -491,13 +491,13 @@
           applyTransform();
 
           if (
-            Math.abs(spinXVelocity) < 0.16 &&
-            Math.abs(spinYVelocity) < 0.16 &&
-            Math.abs(angularVelocity) < 0.18 &&
-            Math.abs(wobbleXVelocity) < 0.12 &&
-            Math.abs(wobbleYVelocity) < 0.12 &&
-            Math.abs(state.wobbleX) < 0.4 &&
-            Math.abs(state.wobbleY) < 0.4
+            Math.abs(spinXVelocity) < 0.1 &&
+            Math.abs(spinYVelocity) < 0.1 &&
+            Math.abs(angularVelocity) < 0.12 &&
+            Math.abs(wobbleXVelocity) < 0.08 &&
+            Math.abs(wobbleYVelocity) < 0.08 &&
+            Math.abs(state.wobbleX) < 0.28 &&
+            Math.abs(state.wobbleY) < 0.28
           ) {
             settleToRest();
             return;
