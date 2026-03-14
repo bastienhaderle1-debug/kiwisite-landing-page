@@ -76,6 +76,14 @@
     function updateActiveFromScroll() {
       const header = document.querySelector(".site-header");
       const headerOffset = header ? header.offsetHeight : 0;
+      const scrollBottom = window.scrollY + window.innerHeight;
+      const pageBottom = document.documentElement.scrollHeight - 2;
+
+      if (sections.length && scrollBottom >= pageBottom) {
+        setActive(sections[sections.length - 1].id);
+        return;
+      }
+
       const y = window.scrollY + headerOffset + 28;
       let currentId = sections[0] ? sections[0].id : "";
 
