@@ -314,7 +314,7 @@
   }
 
   function initSceneCardsInteraction() {
-    const mediaQuery = window.matchMedia("(min-width: 980px) and (pointer: fine)");
+    const mediaQuery = window.matchMedia("(min-width: 750px) and (pointer: fine)");
     const cards = document.querySelectorAll(".scene-card");
     if (!cards.length || !mediaQuery.matches) return;
 

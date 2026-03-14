@@ -1735,7 +1735,7 @@ textarea:focus-visible,
   }
 }
 
-@media (min-width: 980px) {
+@media (min-width: 750px) {
   .offers-hero {
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) 26rem;
