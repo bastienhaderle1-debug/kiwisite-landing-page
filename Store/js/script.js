@@ -306,6 +306,76 @@
     syncOfferCards();
   }
 
+  function initMobileDifficultyCards() {
+    const cards = document.querySelectorAll("[data-difficulty-card]");
+    if (!cards.length) return;
+
+    const mobileQuery = window.matchMedia("(max-width: 719px)");
+    let syncingState = false;
+
+    function setDesktopState() {
+      syncingState = true;
+      cards.forEach(function (card) {
+        card.open = true;
+      });
+      syncingState = false;
+    }
+
+    function setMobileState() {
+      syncingState = true;
+      cards.forEach(function (card) {
+        card.open = false;
+      });
+      syncingState = false;
+    }
+
+    cards.forEach(function (card) {
+      card.addEventListener("toggle", function () {
+        if (!mobileQuery.matches || syncingState) return;
+
+        const difficultyName =
+          card.getAttribute("data-difficulty-name") ||
+          (card.querySelector(".difficulty-name")
+            ? card.querySelector(".difficulty-name").textContent.trim()
+            : "");
+
+        if (card.open) {
+          cards.forEach(function (otherCard) {
+            if (otherCard !== card) {
+              otherCard.open = false;
+            }
+          });
+        }
+
+        track("difficulty_toggle", {
+          level: difficultyName,
+          expanded: card.open
+        });
+      });
+    });
+
+    function syncDifficultyCards(event) {
+      if (event && event.matches === false) {
+        setDesktopState();
+        return;
+      }
+
+      if (mobileQuery.matches) {
+        setMobileState();
+      } else {
+        setDesktopState();
+      }
+    }
+
+    if (typeof mobileQuery.addEventListener === "function") {
+      mobileQuery.addEventListener("change", syncDifficultyCards);
+    } else if (typeof mobileQuery.addListener === "function") {
+      mobileQuery.addListener(syncDifficultyCards);
+    }
+
+    syncDifficultyCards();
+  }
+
   function clearErrors(form) {
     const errors = form.querySelectorAll(".form-error");
     errors.forEach(function (err) {
@@ -725,14 +795,176 @@
     });
   }
 
+  function initBrandSignature() {
+    const brand = document.querySelector("[data-brand-3d]");
+    if (!brand) return;
+
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const finePointerQuery = window.matchMedia("(pointer: fine)");
+    if (reducedMotionQuery.matches || !finePointerQuery.matches) return;
+
+    const state = {
+      currentX: 0,
+      currentY: 0,
+      targetX: 0,
+      targetY: 0,
+      glowX: 50,
+      glowY: 50,
+      rafId: 0
+    };
+
+    function render() {
+      state.currentX += (state.targetX - state.currentX) * 0.14;
+      state.currentY += (state.targetY - state.currentY) * 0.14;
+
+      brand.style.setProperty("--brand-tilt-x", state.currentX.toFixed(2) + "deg");
+      brand.style.setProperty("--brand-tilt-y", state.currentY.toFixed(2) + "deg");
+      brand.style.setProperty("--brand-glow-x", state.glowX.toFixed(2) + "%");
+      brand.style.setProperty("--brand-glow-y", state.glowY.toFixed(2) + "%");
+
+      const shouldContinue =
+        Math.abs(state.currentX - state.targetX) > 0.02 ||
+        Math.abs(state.currentY - state.targetY) > 0.02;
+
+      if (shouldContinue) {
+        state.rafId = window.requestAnimationFrame(render);
+      } else {
+        state.rafId = 0;
+      }
+    }
+
+    function requestRender() {
+      if (!state.rafId) {
+        state.rafId = window.requestAnimationFrame(render);
+      }
+    }
+
+    brand.addEventListener("pointermove", function (event) {
+      const rect = brand.getBoundingClientRect();
+      const px = (event.clientX - rect.left) / rect.width;
+      const py = (event.clientY - rect.top) / rect.height;
+
+      state.targetX = (0.5 - py) * 14;
+      state.targetY = (px - 0.5) * 18;
+      state.glowX = px * 100;
+      state.glowY = py * 100;
+      requestRender();
+    });
+
+    brand.addEventListener("pointerleave", function () {
+      state.targetX = 0;
+      state.targetY = 0;
+      state.glowX = 50;
+      state.glowY = 50;
+      requestRender();
+    });
+
+    brand.addEventListener("focus", function () {
+      state.targetX = -3;
+      state.targetY = 6;
+      requestRender();
+    });
+
+    brand.addEventListener("blur", function () {
+      state.targetX = 0;
+      state.targetY = 0;
+      state.glowX = 50;
+      state.glowY = 50;
+      requestRender();
+    });
+  }
+
+  function initContactPanelTilt() {
+    const panel = document.querySelector("[data-contact-tilt]");
+    if (!panel) return;
+
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const desktopQuery = window.matchMedia("(min-width: 720px)");
+    const finePointerQuery = window.matchMedia("(pointer: fine)");
+    if (reducedMotionQuery.matches || !desktopQuery.matches || !finePointerQuery.matches) return;
+
+    const state = {
+      currentX: 0,
+      currentY: 0,
+      targetX: 0,
+      targetY: 0,
+      glowX: 50,
+      glowY: 0,
+      rafId: 0
+    };
+
+    function render() {
+      state.currentX += (state.targetX - state.currentX) * 0.12;
+      state.currentY += (state.targetY - state.currentY) * 0.12;
+
+      panel.style.setProperty("--contact-tilt-x", state.currentX.toFixed(2) + "deg");
+      panel.style.setProperty("--contact-tilt-y", state.currentY.toFixed(2) + "deg");
+      panel.style.setProperty("--contact-glow-x", state.glowX.toFixed(2) + "%");
+      panel.style.setProperty("--contact-glow-y", state.glowY.toFixed(2) + "%");
+
+      const shouldContinue =
+        Math.abs(state.currentX - state.targetX) > 0.02 ||
+        Math.abs(state.currentY - state.targetY) > 0.02;
+
+      if (shouldContinue) {
+        state.rafId = window.requestAnimationFrame(render);
+      } else {
+        state.rafId = 0;
+      }
+    }
+
+    function requestRender() {
+      if (!state.rafId) {
+        state.rafId = window.requestAnimationFrame(render);
+      }
+    }
+
+    panel.addEventListener("pointermove", function (event) {
+      const rect = panel.getBoundingClientRect();
+      const px = (event.clientX - rect.left) / rect.width;
+      const py = (event.clientY - rect.top) / rect.height;
+
+      state.targetX = (0.5 - py) * 8;
+      state.targetY = (px - 0.5) * 10;
+      state.glowX = px * 100;
+      state.glowY = py * 100;
+      requestRender();
+    });
+
+    panel.addEventListener("pointerleave", function () {
+      state.targetX = 0;
+      state.targetY = 0;
+      state.glowX = 50;
+      state.glowY = 0;
+      requestRender();
+    });
+
+    panel.addEventListener("focusin", function () {
+      state.targetX = -2;
+      state.targetY = 4;
+      requestRender();
+    });
+
+    panel.addEventListener("focusout", function () {
+      state.targetX = 0;
+      state.targetY = 0;
+      state.glowX = 50;
+      state.glowY = 0;
+      requestRender();
+    });
+  }
+
   initSmoothScroll();
   initNavSectionHighlight();
   initFaqAccordion();
   initCopyButtons();
   initMobileContactFab();
   initMobileOfferCards();
+  initMobileDifficultyCards();
   initContactForm();
   initReviewsCarousel();
   initStripeLinksTracking();
+  initBrandSignature();
+  initContactPanelTilt();
   initSceneCardsInteraction();
 })();

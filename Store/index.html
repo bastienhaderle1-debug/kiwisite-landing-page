@@ -18,12 +18,24 @@
 
     <header class="site-header" id="top">
       <div class="container nav-wrap">
-        <p class="brand" aria-label="KiwiSiteBuilder">
-          <span class="brand-logo" aria-hidden="true">
-            <img src="assets/logo kiwi.png" alt="" />
+        <a class="brand" href="#top" aria-label="Revenir en haut de la page" data-brand-3d>
+          <span class="brand-stage" aria-hidden="true">
+            <span class="brand-halo"></span>
+            <span class="brand-logo-shell">
+              <span class="brand-orbit brand-orbit-one"></span>
+              <span class="brand-orbit brand-orbit-two"></span>
+              <span class="brand-logo">
+                <img src="assets/logo kiwi.png" alt="" />
+              </span>
+              <span class="brand-beacon"></span>
+            </span>
           </span>
-          <span class="brand-text">KiwiSiteBuilder</span>
-        </p>
+          <span class="brand-copy">
+            <span class="brand-label">KiwiSiteBuilder</span>
+            <span class="brand-text">Design • Code • Motion</span>
+          </span>
+          <span class="brand-code" aria-hidden="true">&lt;/&gt;</span>
+        </a>
         <nav aria-label="Navigation principale">
           <ul class="nav-list">
             <li><a href="#offres">Offres</a></li>
@@ -55,7 +67,7 @@
           </span>
         </button>
 
-        <div class="contact-panel" id="contact-fab-panel">
+        <div class="contact-panel" id="contact-fab-panel" data-contact-tilt>
           <div class="contact-panel-copy">
             <span class="contact-tag">Contact rapide</span>
             <p class="contact-title">Email, WhatsApp ou Discord.</p>
@@ -361,29 +373,49 @@
             </article>
           </div>
           <div class="difficulty-grid">
-            <article class="difficulty-item">
-              <h3>Niveau 1</h3>
-              <p>Page de vente simple, 1 formulaire ou lien de contact.</p>
-            </article>
-            <article class="difficulty-item">
-              <h3>Niveau 2</h3>
-              <p>Landing avancée, FAQ, témoignages, tracking simple.</p>
-            </article>
-            <article class="difficulty-item">
-              <h3>Niveau 3</h3>
-              <p>Site vitrine 3 à 6 pages, formulaires, blog ou réservation simple.</p>
-            </article>
-            <article class="difficulty-item">
-              <h3>Niveau 4</h3>
-              <p>Site complet, intégrations (Maps, Analytics), base e-commerce.</p>
-            </article>
-            <article class="difficulty-item">
-              <h3>Niveau 5</h3>
-              <p>
-                La totale : comptes utilisateurs, espace client et logique métier
-                avancée.
-              </p>
-            </article>
+            <details class="difficulty-item" data-difficulty-card data-difficulty-name="Niveau 1" open>
+              <summary class="difficulty-toggle">
+                <span class="difficulty-name">Niveau 1</span>
+              </summary>
+              <div class="difficulty-details">
+                <p>Page de vente simple, 1 formulaire ou lien de contact.</p>
+              </div>
+            </details>
+            <details class="difficulty-item" data-difficulty-card data-difficulty-name="Niveau 2" open>
+              <summary class="difficulty-toggle">
+                <span class="difficulty-name">Niveau 2</span>
+              </summary>
+              <div class="difficulty-details">
+                <p>Landing avancée, FAQ, témoignages, tracking simple.</p>
+              </div>
+            </details>
+            <details class="difficulty-item" data-difficulty-card data-difficulty-name="Niveau 3" open>
+              <summary class="difficulty-toggle">
+                <span class="difficulty-name">Niveau 3</span>
+              </summary>
+              <div class="difficulty-details">
+                <p>Site vitrine 3 à 6 pages, formulaires, blog ou réservation simple.</p>
+              </div>
+            </details>
+            <details class="difficulty-item" data-difficulty-card data-difficulty-name="Niveau 4" open>
+              <summary class="difficulty-toggle">
+                <span class="difficulty-name">Niveau 4</span>
+              </summary>
+              <div class="difficulty-details">
+                <p>Site complet, intégrations (Maps, Analytics), base e-commerce.</p>
+              </div>
+            </details>
+            <details class="difficulty-item" data-difficulty-card data-difficulty-name="Niveau 5" open>
+              <summary class="difficulty-toggle">
+                <span class="difficulty-name">Niveau 5</span>
+              </summary>
+              <div class="difficulty-details">
+                <p>
+                  La totale : comptes utilisateurs, espace client et logique métier
+                  avancée.
+                </p>
+              </div>
+            </details>
           </div>
         </div>
       </section>
