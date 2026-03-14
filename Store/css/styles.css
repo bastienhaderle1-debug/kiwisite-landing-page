@@ -2839,6 +2839,14 @@ textarea:focus-visible,
     height: 100%;
   }
 
+  .offer-card .offer-details ul {
+    display: none;
+  }
+
+  .offer-card.is-desktop-expanded .offer-details ul {
+    display: block;
+  }
+
   .offer-footer {
     margin-top: auto;
     align-self: end;

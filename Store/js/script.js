@@ -249,6 +249,7 @@
       syncingState = true;
       cards.forEach(function (card) {
         card.open = true;
+        card.classList.remove("is-desktop-expanded");
       });
       syncingState = false;
     }
@@ -257,11 +258,28 @@
       syncingState = true;
       cards.forEach(function (card) {
         card.open = false;
+        card.classList.remove("is-desktop-expanded");
       });
       syncingState = false;
     }
 
     cards.forEach(function (card) {
+      const summary = card.querySelector(".offer-toggle");
+
+      if (summary) {
+        summary.addEventListener("click", function (event) {
+          if (mobileQuery.matches) return;
+          event.preventDefault();
+          card.classList.toggle("is-desktop-expanded");
+          track("offer_desktop_details_toggle", {
+            offer:
+              card.getAttribute("data-offer-name") ||
+              (card.querySelector(".offer-name") ? card.querySelector(".offer-name").textContent.trim() : ""),
+            expanded: card.classList.contains("is-desktop-expanded")
+          });
+        });
+      }
+
       card.addEventListener("toggle", function () {
         if (!mobileQuery.matches || syncingState) return;
 
