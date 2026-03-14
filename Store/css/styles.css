@@ -2316,6 +2316,8 @@ textarea:focus-visible,
   h2 {
     font-size: 1.24rem;
     line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.35rem;
   }
 
   .kicker {
@@ -2341,7 +2343,16 @@ textarea:focus-visible,
   }
 
   .lead-points span {
+    display: inline-flex;
+    align-items: center;
     padding: 0.28rem 0.56rem;
+    border-color: rgba(131, 242, 143, 0.18);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+      rgba(12, 20, 16, 0.92);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 8px 16px rgba(0, 0, 0, 0.14);
     font-size: 0.76rem;
   }
 
@@ -2386,6 +2397,13 @@ textarea:focus-visible,
   .proof-stats article {
     padding: 0.82rem;
     border-radius: 0.82rem;
+    border-color: rgba(74, 105, 87, 0.82);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)),
+      linear-gradient(145deg, rgba(16, 26, 21, 0.98), rgba(11, 18, 14, 0.96));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 12px 24px rgba(0, 0, 0, 0.16);
   }
 
   .offer-card {
@@ -2396,7 +2414,13 @@ textarea:focus-visible,
 
   .offer-card.featured {
     transform: none;
-    box-shadow: 0 0 0 1px var(--accent-ring), var(--shadow);
+    background:
+      radial-gradient(circle at top right, rgba(131, 242, 143, 0.16), transparent 42%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)),
+      linear-gradient(145deg, rgba(16, 26, 21, 0.98), rgba(11, 18, 14, 0.96));
+    box-shadow:
+      0 0 0 1px var(--accent-ring),
+      0 14px 28px rgba(0, 0, 0, 0.22);
   }
 
   .difficulty-toggle {
@@ -2414,7 +2438,9 @@ textarea:focus-visible,
     display: grid;
     place-items: center;
     border-radius: 999px;
-    background: rgba(131, 242, 143, 0.08);
+    background:
+      linear-gradient(180deg, rgba(131, 242, 143, 0.18), rgba(131, 242, 143, 0.08));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
     color: var(--kiwi);
     font-size: 1.1rem;
     font-weight: 700;
@@ -2429,6 +2455,7 @@ textarea:focus-visible,
   .difficulty-name {
     font-size: 0.98rem;
     line-height: 1.16;
+    letter-spacing: -0.015em;
   }
 
   .difficulty-details {
@@ -2439,6 +2466,13 @@ textarea:focus-visible,
 
   .difficulty-item:not([open]) .difficulty-details {
     display: none;
+  }
+
+  .difficulty-item[open] {
+    border-color: rgba(131, 242, 143, 0.24);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 14px 28px rgba(0, 0, 0, 0.18);
   }
 
   .offer-toggle {
@@ -2456,7 +2490,9 @@ textarea:focus-visible,
     display: grid;
     place-items: center;
     border-radius: 999px;
-    background: rgba(131, 242, 143, 0.08);
+    background:
+      linear-gradient(180deg, rgba(131, 242, 143, 0.18), rgba(131, 242, 143, 0.08));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
     color: var(--kiwi);
     font-size: 1.1rem;
     font-weight: 700;
@@ -2469,6 +2505,12 @@ textarea:focus-visible,
 
   .offer-audience {
     margin: 0 0 0.2rem;
+    display: inline-flex;
+    width: fit-content;
+    padding: 0.12rem 0.42rem;
+    border: 1px solid rgba(131, 242, 143, 0.16);
+    border-radius: 999px;
+    background: rgba(131, 242, 143, 0.08);
     font-size: 0.67rem;
     line-height: 1.25;
     letter-spacing: 0.1em;
@@ -2478,6 +2520,7 @@ textarea:focus-visible,
     margin: 0 0 0.36rem;
     font-size: 1.02rem;
     line-height: 1.16;
+    letter-spacing: -0.015em;
     overflow-wrap: anywhere;
   }
 
@@ -2495,6 +2538,7 @@ textarea:focus-visible,
   .price-now {
     font-size: 1.55rem;
     line-height: 1;
+    text-shadow: 0 0 18px rgba(131, 242, 143, 0.14);
   }
 
   .offer-details {
@@ -2514,6 +2558,7 @@ textarea:focus-visible,
   .offer-meta {
     display: block;
     font-size: 0.84rem;
+    color: #d3e6da;
   }
 
   .offer-card .offer-details ul {
@@ -2533,6 +2578,7 @@ textarea:focus-visible,
   .offer-note {
     margin: 0 0 0.6rem;
     font-size: 0.78rem;
+    color: #a8c0b4;
   }
 
   .offer-card .stripe-btn {
@@ -2546,6 +2592,12 @@ textarea:focus-visible,
     margin-top: 0.82rem;
     padding: 0.82rem 0.78rem;
     border-radius: 0.82rem;
+    background:
+      radial-gradient(circle at top center, rgba(131, 242, 143, 0.14), transparent 48%),
+      var(--guarantee-bg);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 12px 24px rgba(0, 0, 0, 0.14);
   }
 
   .offer-guarantee-title {
@@ -2560,10 +2612,29 @@ textarea:focus-visible,
     gap: 0.8rem;
     padding: 0.95rem;
     border-radius: 0.88rem;
+    background:
+      radial-gradient(circle at top right, rgba(131, 242, 143, 0.14), transparent 34%),
+      linear-gradient(145deg, rgba(16, 26, 21, 0.98), rgba(10, 17, 14, 0.96));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 14px 28px rgba(0, 0, 0, 0.18);
   }
 
   .proof-stats {
     gap: 0.58rem;
+  }
+
+  .proof-stats article {
+    padding: 0.72rem 0.78rem;
+  }
+
+  .proof-stats strong {
+    font-size: 1rem;
+  }
+
+  .proof-stats p {
+    font-size: 0.84rem;
+    line-height: 1.4;
   }
 
   .code-card pre {
@@ -2603,9 +2674,46 @@ textarea:focus-visible,
     padding-inline: 2.1rem;
   }
 
+  .review {
+    position: relative;
+    background:
+      radial-gradient(circle at top left, rgba(131, 242, 143, 0.08), transparent 34%),
+      linear-gradient(145deg, rgba(16, 26, 21, 0.98), rgba(10, 17, 14, 0.96));
+  }
+
+  .review::after {
+    content: "\"";
+    position: absolute;
+    top: 0.5rem;
+    right: 0.65rem;
+    color: rgba(131, 242, 143, 0.14);
+    font-size: 2.3rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .stars {
+    letter-spacing: 0.12em;
+    font-size: 0.88rem;
+  }
+
+  .review-meta {
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
   .reviews-counter {
     text-align: center;
     font-size: 0.84rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 4.2rem;
+    padding: 0.16rem 0.55rem;
+    border: 1px solid rgba(131, 242, 143, 0.16);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
   }
 
   .difficulty-legend {
@@ -2613,9 +2721,64 @@ textarea:focus-visible,
     gap: 0.5rem;
   }
 
+  .difficulty-legend-item {
+    padding: 0.68rem 0.72rem;
+    border-left-width: 2px;
+  }
+
+  .difficulty-legend-item h3 {
+    font-size: 0.86rem;
+    letter-spacing: -0.01em;
+  }
+
+  .difficulty-legend-item p {
+    font-size: 0.8rem;
+  }
+
+  .scale-track {
+    margin-top: 0.78rem;
+    padding: 0.4rem;
+    border-radius: 0.8rem;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 10px 18px rgba(0, 0, 0, 0.12);
+  }
+
+  .scale-track span {
+    border-radius: 999px;
+    padding: 0.24rem;
+    font-size: 0.76rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .faq-item {
+    background:
+      linear-gradient(145deg, rgba(16, 26, 21, 0.98), rgba(10, 17, 14, 0.96));
+  }
+
+  .faq-question {
+    font-size: 0.94rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .faq-answer {
+    margin-top: 0.55rem;
+    padding-top: 0.55rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
   .contact-list {
     margin-top: 0.75rem;
     gap: 0.38rem;
+  }
+
+  .contact-list li {
+    padding: 0.52rem 0.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0.78rem;
+    background:
+      linear-gradient(145deg, rgba(16, 26, 21, 0.96), rgba(10, 17, 14, 0.94));
   }
 
   form {
@@ -2638,6 +2801,10 @@ textarea:focus-visible,
   textarea {
     font-size: 1rem;
     padding: 0.55rem;
+    border-color: rgba(74, 105, 87, 0.9);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+      #0f1713;
   }
 
   .site-footer p {
@@ -2646,6 +2813,25 @@ textarea:focus-visible,
 }
 
 @media (min-width: 720px) {
+  .reviews-controls {
+    padding-inline: 0.55rem;
+  }
+
+  .reviews-arrow {
+    width: 2.7rem;
+    height: 2.7rem;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), transparent 42%),
+      rgba(8, 14, 11, 0.46);
+    box-shadow:
+      0 10px 22px rgba(0, 0, 0, 0.18),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  }
+
+  .review-slide {
+    padding-inline: clamp(4rem, 9vw, 5.2rem);
+  }
+
   .contact-panel {
     --contact-tilt-x: 0deg;
     --contact-tilt-y: 0deg;
