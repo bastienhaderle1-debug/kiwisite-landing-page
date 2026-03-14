@@ -2331,6 +2331,10 @@ textarea:focus-visible,
     display: none;
   }
 
+  section[aria-labelledby="obtenez-title"] {
+    display: none;
+  }
+
   .lead-points {
     gap: 0.38rem;
     margin-top: 0.72rem;
