@@ -852,13 +852,19 @@ h1 span {
 
 .lead-points {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: center;
   gap: 0.55rem;
   margin-top: 0.9rem;
+  width: 100%;
+  overflow: visible;
 }
 
 .lead-points span {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
   padding: 0.38rem 0.72rem;
   border: 1px solid var(--border);
@@ -866,6 +872,12 @@ h1 span {
   background: rgba(255, 255, 255, 0.03);
   color: #f4fff8;
   font-size: 0.92rem;
+  white-space: nowrap;
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
+  will-change: transform;
+  transform: translate3d(var(--lead-pill-x, 0px), 0, 0);
   transition:
     transform 180ms ease,
     border-color 180ms ease,
@@ -885,7 +897,7 @@ h1 span {
 
 .lead-points span:hover,
 .lead-points span:focus-visible {
-  transform: translateY(-2px) scale(1.02);
+  transform: translate3d(var(--lead-pill-x, 0px), -2px, 0) scale(1.02);
   border-color: var(--kiwi);
   background: rgba(131, 242, 143, 0.12);
   color: #ffffff;
@@ -897,6 +909,21 @@ h1 span {
 .lead-points span:hover::before,
 .lead-points span:focus-visible::before {
   transform: translateX(130%);
+}
+
+.lead-points span.is-dragging {
+  cursor: grabbing;
+  z-index: 2;
+  border-color: rgba(131, 242, 143, 0.5);
+  background: rgba(131, 242, 143, 0.16);
+  box-shadow:
+    0 16px 28px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(131, 242, 143, 0.12);
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
 }
 
 .nav-list a,
@@ -1144,6 +1171,7 @@ h1 span {
   will-change: transform;
   cursor: grab;
   user-select: none;
+  touch-action: none;
   transition:
     transform 180ms ease,
     box-shadow 180ms ease,
@@ -2697,6 +2725,7 @@ textarea:focus-visible,
   .lead-points {
     gap: 0.38rem;
     margin-top: 0.72rem;
+    overflow-x: clip;
   }
 
   .lead-points span {

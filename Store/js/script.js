@@ -560,9 +560,211 @@
     });
   }
 
+  function initLeadPillsInteraction() {
+    const group = document.querySelector(".lead-points");
+    if (!group) return;
+
+    const pills = Array.from(group.querySelectorAll("span"));
+    if (pills.length < 2) return;
+
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const state = {
+      dragIndex: -1,
+      pointerId: null,
+      startX: 0,
+      startOffset: 0,
+      offsets: pills.map(function () {
+        return 0;
+      }),
+      targetOffsets: pills.map(function () {
+        return 0;
+      }),
+      widths: [],
+      baseCenters: [],
+      gap: 10,
+      rafId: 0,
+      returnTimerId: 0
+    };
+
+    function clearReturnTimer() {
+      if (state.returnTimerId) {
+        window.clearTimeout(state.returnTimerId);
+        state.returnTimerId = 0;
+      }
+    }
+
+    function measure() {
+      const groupRect = group.getBoundingClientRect();
+      const styles = window.getComputedStyle(group);
+      const parsedGap = parseFloat(styles.columnGap || styles.gap || "10");
+      state.gap = Number.isFinite(parsedGap) ? parsedGap : 10;
+      state.widths = pills.map(function (pill) {
+        return pill.offsetWidth;
+      });
+      state.baseCenters = pills.map(function (pill) {
+        const rect = pill.getBoundingClientRect();
+        return rect.left - groupRect.left + rect.width / 2;
+      });
+    }
+
+    function requestRender() {
+      if (state.rafId) return;
+      state.rafId = window.requestAnimationFrame(render);
+    }
+
+    function render() {
+      state.rafId = 0;
+
+      for (let index = 0; index < pills.length; index += 1) {
+        state.offsets[index] += (state.targetOffsets[index] - state.offsets[index]) * 0.18;
+        if (Math.abs(state.targetOffsets[index] - state.offsets[index]) < 0.08) {
+          state.offsets[index] = state.targetOffsets[index];
+        }
+
+        pills[index].style.setProperty("--lead-pill-x", state.offsets[index].toFixed(2) + "px");
+      }
+
+      const keepAnimating = state.offsets.some(function (offset, index) {
+        return Math.abs(state.targetOffsets[index] - offset) > 0.08;
+      });
+
+      if (keepAnimating) {
+        state.rafId = window.requestAnimationFrame(render);
+      }
+    }
+
+    function scheduleReturn() {
+      clearReturnTimer();
+      state.returnTimerId = window.setTimeout(function () {
+        state.returnTimerId = 0;
+        if (state.dragIndex !== -1) return;
+        state.targetOffsets = state.targetOffsets.map(function () {
+          return 0;
+        });
+        requestRender();
+      }, 2000);
+    }
+
+    function resolveTargets(draggedIndex, desiredOffset) {
+      const centers = state.baseCenters.map(function (center) {
+        return center;
+      });
+      const minCenter = state.widths.map(function (width) {
+        return width / 2;
+      });
+      const maxCenter = state.widths.map(function (width) {
+        return Math.max(width / 2, group.clientWidth - width / 2);
+      });
+
+      centers[draggedIndex] = Math.max(
+        minCenter[draggedIndex],
+        Math.min(maxCenter[draggedIndex], state.baseCenters[draggedIndex] + desiredOffset)
+      );
+
+      for (let pass = 0; pass < pills.length * 4; pass += 1) {
+        for (let index = 0; index < centers.length - 1; index += 1) {
+          const nextIndex = index + 1;
+          const minDistance = (state.widths[index] + state.widths[nextIndex]) / 2 + state.gap;
+          const distance = centers[nextIndex] - centers[index];
+          if (distance >= minDistance) continue;
+
+          const overlap = minDistance - distance;
+          if (index === draggedIndex) {
+            centers[nextIndex] += overlap;
+          } else if (nextIndex === draggedIndex) {
+            centers[index] -= overlap;
+          } else {
+            centers[index] -= overlap / 2;
+            centers[nextIndex] += overlap / 2;
+          }
+        }
+
+        let shift = 0;
+        if (centers[0] < minCenter[0]) {
+          shift = minCenter[0] - centers[0];
+        } else {
+          const lastIndex = centers.length - 1;
+          if (centers[lastIndex] > maxCenter[lastIndex]) {
+            shift = maxCenter[lastIndex] - centers[lastIndex];
+          }
+        }
+
+        if (shift !== 0) {
+          for (let index = 0; index < centers.length; index += 1) {
+            centers[index] += shift;
+          }
+        }
+      }
+
+      state.targetOffsets = centers.map(function (center, index) {
+        return center - state.baseCenters[index];
+      });
+      requestRender();
+    }
+
+    function onPointerMove(event) {
+      if (event.pointerId !== state.pointerId || state.dragIndex === -1) return;
+      const deltaX = event.clientX - state.startX;
+      resolveTargets(state.dragIndex, state.startOffset + deltaX);
+    }
+
+    function onPointerEnd(event) {
+      if (event.pointerId !== state.pointerId || state.dragIndex === -1) return;
+      const dragIndex = state.dragIndex;
+      const pill = pills[dragIndex];
+      state.dragIndex = -1;
+      state.pointerId = null;
+      pill.classList.remove("is-dragging");
+      if (pill.hasPointerCapture(event.pointerId)) {
+        pill.releasePointerCapture(event.pointerId);
+      }
+      scheduleReturn();
+    }
+
+    pills.forEach(function (pill, index) {
+      pill.addEventListener("pointerdown", function (event) {
+        if (event.button !== undefined && event.button !== 0) return;
+        if (reducedMotionQuery.matches) return;
+
+        clearReturnTimer();
+        measure();
+        state.dragIndex = index;
+        state.pointerId = event.pointerId;
+        state.startX = event.clientX;
+        state.startOffset = state.targetOffsets[index];
+        pill.classList.add("is-dragging");
+        pill.setPointerCapture(event.pointerId);
+      });
+
+      pill.addEventListener("pointermove", onPointerMove);
+      pill.addEventListener("pointerup", onPointerEnd);
+      pill.addEventListener("pointercancel", onPointerEnd);
+      pill.addEventListener("lostpointercapture", function () {
+        if (state.dragIndex !== index) return;
+        state.dragIndex = -1;
+        state.pointerId = null;
+        pill.classList.remove("is-dragging");
+        scheduleReturn();
+      });
+    });
+
+    window.addEventListener("resize", function () {
+      measure();
+      state.offsets = state.offsets.map(function () {
+        return 0;
+      });
+      state.targetOffsets = state.targetOffsets.map(function () {
+        return 0;
+      });
+      requestRender();
+    });
+
+    measure();
+  }
+
   function initSceneCardsInteraction() {
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const desktopFinePointerQuery = window.matchMedia("(min-width: 750px) and (pointer: fine)");
+    const heroSceneVisibleQuery = window.matchMedia("(min-width: 750px)");
     const cards = document.querySelectorAll(".scene-card, .offer-mini-visual");
     if (!cards.length || reducedMotionQuery.matches) return;
 
@@ -573,7 +775,7 @@
     cards.forEach(function (card) {
       const baseZ = parseFloat(card.getAttribute("data-base-z") || "0");
       const isOfferMiniCard = card.classList.contains("offer-mini-visual");
-      if (!isOfferMiniCard && !desktopFinePointerQuery.matches) return;
+      if (!isOfferMiniCard && !heroSceneVisibleQuery.matches) return;
 
       const state = {
         dragging: false,
@@ -1146,6 +1348,7 @@
   initContactForm();
   initReviewsCarousel();
   initStripeLinksTracking();
+  initLeadPillsInteraction();
   initBrandSignature();
   initContactPanelTilt();
   initOfferGuaranteeTilt();
