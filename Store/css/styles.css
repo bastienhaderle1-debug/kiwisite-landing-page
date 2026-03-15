@@ -3417,7 +3417,16 @@ textarea:focus-visible,
 }
 
 @media (min-width: 720px) and (max-width: 1099px) {
+  .lead-points {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.42rem;
+  }
+
   .lead-points span {
+    font-size: 0.86rem;
+    padding: 0.34rem 0.6rem;
+    white-space: normal;
     cursor: default;
     touch-action: auto;
     will-change: auto;
