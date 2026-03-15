@@ -568,6 +568,7 @@
     if (pills.length < 2) return;
 
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const intermediateStaticQuery = window.matchMedia("(min-width: 720px) and (max-width: 1099px)");
     const state = {
       dragIndex: -1,
       pointerId: null,
@@ -595,11 +596,46 @@
       returnTimerId: 0
     };
 
+    function isStaticMode() {
+      return reducedMotionQuery.matches || intermediateStaticQuery.matches;
+    }
+
     function clearReturnTimer() {
       if (state.returnTimerId) {
         window.clearTimeout(state.returnTimerId);
         state.returnTimerId = 0;
       }
+    }
+
+    function resetInteractionState() {
+      clearReturnTimer();
+      if (state.rafId) {
+        window.cancelAnimationFrame(state.rafId);
+        state.rafId = 0;
+      }
+
+      state.dragIndex = -1;
+      state.pointerId = null;
+      state.startX = 0;
+      state.startOffset = 0;
+      state.lastPointerX = 0;
+      state.lastPointerTime = 0;
+      state.pointerVelocityX = 0;
+      state.offsets = state.offsets.map(function () {
+        return 0;
+      });
+      state.targetOffsets = state.targetOffsets.map(function () {
+        return 0;
+      });
+      state.velocities = state.velocities.map(function () {
+        return 0;
+      });
+      state.activeContacts.clear();
+
+      pills.forEach(function (pill) {
+        pill.classList.remove("is-dragging");
+        pill.style.setProperty("--lead-pill-x", "0px");
+      });
     }
 
     function measure() {
@@ -642,12 +678,17 @@
     }
 
     function requestRender() {
+      if (isStaticMode()) return;
       if (state.rafId) return;
       state.rafId = window.requestAnimationFrame(render);
     }
 
     function render() {
       state.rafId = 0;
+      if (isStaticMode()) {
+        resetInteractionState();
+        return;
+      }
 
       for (let index = 0; index < pills.length; index += 1) {
         const spring = state.dragIndex === index ? 0.28 : 0.16;
@@ -682,7 +723,7 @@
       clearReturnTimer();
       state.returnTimerId = window.setTimeout(function () {
         state.returnTimerId = 0;
-        if (state.dragIndex !== -1) return;
+        if (state.dragIndex !== -1 || isStaticMode()) return;
         state.targetOffsets = state.targetOffsets.map(function () {
           return 0;
         });
@@ -804,7 +845,7 @@
     pills.forEach(function (pill, index) {
       pill.addEventListener("pointerdown", function (event) {
         if (event.button !== undefined && event.button !== 0) return;
-        if (reducedMotionQuery.matches) return;
+        if (isStaticMode()) return;
 
         clearReturnTimer();
         measure();
@@ -836,6 +877,10 @@
     });
 
     window.addEventListener("resize", function () {
+      if (isStaticMode()) {
+        resetInteractionState();
+        return;
+      }
       measure();
       state.offsets = state.offsets.map(function () {
         return 0;
@@ -850,6 +895,11 @@
       state.activeContacts.clear();
       requestRender();
     });
+
+    if (isStaticMode()) {
+      resetInteractionState();
+      return;
+    }
 
     measure();
   }

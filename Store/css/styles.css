@@ -3416,6 +3416,29 @@ textarea:focus-visible,
 
 }
 
+@media (min-width: 720px) and (max-width: 1099px) {
+  .lead-points span {
+    cursor: default;
+    touch-action: auto;
+    will-change: auto;
+    transform: none;
+  }
+
+  .lead-points span:hover,
+  .lead-points span:focus-visible {
+    transform: none;
+    border-color: var(--border);
+    background: rgba(255, 255, 255, 0.03);
+    color: #f4fff8;
+    box-shadow: none;
+  }
+
+  .lead-points span:hover::before,
+  .lead-points span:focus-visible::before {
+    transform: translateX(-130%);
+  }
+}
+
 @media (min-width: 1100px) {
   .offer-details {
     grid-template-rows: auto auto 1fr auto;
