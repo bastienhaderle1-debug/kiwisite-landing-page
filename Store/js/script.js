@@ -248,7 +248,6 @@
     function setDesktopState() {
       syncingState = true;
       cards.forEach(function (card) {
-        card.open = true;
         card.classList.remove("is-desktop-expanded");
       });
       syncingState = false;
@@ -336,9 +335,6 @@
 
     function setDesktopState() {
       syncingState = true;
-      cards.forEach(function (card) {
-        card.open = true;
-      });
       syncingState = false;
     }
 

@@ -369,6 +369,7 @@ a:focus-visible {
   display: block;
   object-fit: cover;
   border-radius: 50%;
+  aspect-ratio: 471 / 357;
 }
 
 .brand-orbit,
@@ -3255,6 +3256,14 @@ textarea:focus-visible,
 }
 
 @media (min-width: 720px) {
+  .offer-card > .offer-details {
+    display: grid;
+  }
+
+  .difficulty-item > .difficulty-details {
+    display: grid;
+  }
+
   .offer-card {
     display: grid;
     grid-template-rows: auto 1fr;
