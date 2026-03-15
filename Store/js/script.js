@@ -579,6 +579,9 @@
       targetOffsets: pills.map(function () {
         return 0;
       }),
+      velocities: pills.map(function () {
+        return 0;
+      }),
       widths: [],
       baseCenters: [],
       gap: 10,
@@ -616,16 +619,27 @@
       state.rafId = 0;
 
       for (let index = 0; index < pills.length; index += 1) {
-        state.offsets[index] += (state.targetOffsets[index] - state.offsets[index]) * 0.18;
-        if (Math.abs(state.targetOffsets[index] - state.offsets[index]) < 0.08) {
+        const spring = state.dragIndex === index ? 0.28 : 0.16;
+        const damping = state.dragIndex === index ? 0.7 : 0.76;
+        const delta = state.targetOffsets[index] - state.offsets[index];
+
+        state.velocities[index] += delta * spring;
+        state.velocities[index] *= damping;
+        state.offsets[index] += state.velocities[index];
+
+        if (Math.abs(delta) < 0.08 && Math.abs(state.velocities[index]) < 0.08) {
           state.offsets[index] = state.targetOffsets[index];
+          state.velocities[index] = 0;
         }
 
         pills[index].style.setProperty("--lead-pill-x", state.offsets[index].toFixed(2) + "px");
       }
 
       const keepAnimating = state.offsets.some(function (offset, index) {
-        return Math.abs(state.targetOffsets[index] - offset) > 0.08;
+        return (
+          Math.abs(state.targetOffsets[index] - offset) > 0.08 ||
+          Math.abs(state.velocities[index]) > 0.08
+        );
       });
 
       if (keepAnimating) {
@@ -641,8 +655,11 @@
         state.targetOffsets = state.targetOffsets.map(function () {
           return 0;
         });
+        state.velocities = state.velocities.map(function () {
+          return 0;
+        });
         requestRender();
-      }, 2000);
+      }, 1500);
     }
 
     function resolveTargets(draggedIndex, desiredOffset) {
@@ -664,18 +681,23 @@
       for (let pass = 0; pass < pills.length * 4; pass += 1) {
         for (let index = 0; index < centers.length - 1; index += 1) {
           const nextIndex = index + 1;
-          const minDistance = (state.widths[index] + state.widths[nextIndex]) / 2 + state.gap;
+          const overlapAllowance = Math.min(
+            state.gap + Math.min(state.widths[index], state.widths[nextIndex]) * 0.12,
+            Math.min(state.widths[index], state.widths[nextIndex]) * 0.18
+          );
+          const minDistance =
+            (state.widths[index] + state.widths[nextIndex]) / 2 + state.gap - overlapAllowance;
           const distance = centers[nextIndex] - centers[index];
           if (distance >= minDistance) continue;
 
           const overlap = minDistance - distance;
           if (index === draggedIndex) {
-            centers[nextIndex] += overlap;
+            centers[nextIndex] += overlap * 0.92;
           } else if (nextIndex === draggedIndex) {
-            centers[index] -= overlap;
+            centers[index] -= overlap * 0.92;
           } else {
-            centers[index] -= overlap / 2;
-            centers[nextIndex] += overlap / 2;
+            centers[index] -= overlap * 0.38;
+            centers[nextIndex] += overlap * 0.38;
           }
         }
 
@@ -715,6 +737,7 @@
       state.dragIndex = -1;
       state.pointerId = null;
       pill.classList.remove("is-dragging");
+      state.velocities[dragIndex] *= 0.35;
       if (pill.hasPointerCapture(event.pointerId)) {
         pill.releasePointerCapture(event.pointerId);
       }
@@ -732,6 +755,7 @@
         state.pointerId = event.pointerId;
         state.startX = event.clientX;
         state.startOffset = state.targetOffsets[index];
+        state.velocities[index] = 0;
         pill.classList.add("is-dragging");
         pill.setPointerCapture(event.pointerId);
       });
@@ -754,6 +778,9 @@
         return 0;
       });
       state.targetOffsets = state.targetOffsets.map(function () {
+        return 0;
+      });
+      state.velocities = state.velocities.map(function () {
         return 0;
       });
       requestRender();

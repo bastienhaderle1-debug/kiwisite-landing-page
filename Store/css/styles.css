@@ -876,10 +876,10 @@ h1 span {
   touch-action: pan-y;
   user-select: none;
   cursor: grab;
+  z-index: 1;
   will-change: transform;
   transform: translate3d(var(--lead-pill-x, 0px), 0, 0);
   transition:
-    transform 180ms ease,
     border-color 180ms ease,
     background-color 180ms ease,
     box-shadow 180ms ease,
