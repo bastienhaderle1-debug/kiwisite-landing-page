@@ -2472,58 +2472,103 @@ textarea:focus-visible,
   }
 
   .contact-fab-toggle {
-    width: 3.7rem;
-    height: 3.7rem;
+    width: 4.1rem;
+    height: 4.1rem;
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 999px;
+    border: 1px solid rgba(131, 242, 143, 0.22);
+    border-radius: 1.35rem;
     padding: 0;
     background:
-      radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.16), transparent 38%),
-      linear-gradient(145deg, var(--kiwi), var(--kiwi-strong));
-    color: var(--accent-contrast);
+      radial-gradient(circle at 28% 22%, rgba(255, 255, 255, 0.16), transparent 34%),
+      radial-gradient(circle at 76% 78%, rgba(131, 242, 143, 0.18), transparent 36%),
+      linear-gradient(155deg, rgba(18, 31, 24, 0.98), rgba(8, 14, 11, 0.98));
+    color: #f7fff9;
     box-shadow:
-      0 16px 32px rgba(0, 0, 0, 0.28),
-      0 0 0 1px rgba(131, 242, 143, 0.2);
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+      0 18px 34px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(131, 242, 143, 0.14),
+      0 0 28px rgba(131, 242, 143, 0.14);
     transition:
       transform 180ms ease,
       box-shadow 220ms ease,
-      background 220ms ease;
+      background 220ms ease,
+      border-color 220ms ease;
     will-change: transform;
+    overflow: hidden;
+    backdrop-filter: blur(14px);
   }
 
   .contact-fab-toggle::before {
     content: "";
     position: absolute;
-    inset: -0.28rem;
+    inset: -0.32rem;
     border-radius: inherit;
-    border: 1px solid rgba(131, 242, 143, 0.26);
+    border: 1px solid rgba(131, 242, 143, 0.24);
     opacity: 0;
-    transform: scale(0.84);
+    transform: scale(0.86);
     transition:
       transform 220ms ease,
       opacity 220ms ease;
     pointer-events: none;
   }
 
+  .contact-fab-toggle::after {
+    content: "";
+    position: absolute;
+    inset: 0.42rem;
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0)),
+      radial-gradient(circle at 50% 50%, rgba(131, 242, 143, 0.16), transparent 70%);
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  .contact-fab-toggle .contact-fab-icon {
+    position: relative;
+    z-index: 1;
+    width: 2.2rem;
+    height: 2.2rem;
+    padding: 0.5rem;
+    border-radius: 0.95rem;
+    background:
+      radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.14), transparent 34%),
+      linear-gradient(155deg, rgba(131, 242, 143, 0.28), rgba(58, 119, 73, 0.18));
+    border: 1px solid rgba(131, 242, 143, 0.22);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 8px 18px rgba(0, 0, 0, 0.22);
+  }
+
+  .contact-fab-toggle .contact-fab-icon svg {
+    filter: drop-shadow(0 0 10px rgba(131, 242, 143, 0.22));
+  }
+
   .contact-fab-toggle:hover,
   .contact-fab-toggle:focus-visible {
-    color: var(--accent-contrast);
+    color: #ffffff;
+    border-color: rgba(131, 242, 143, 0.34);
     transform: translateY(-2px) scale(1.02);
     box-shadow:
-      0 20px 38px rgba(0, 0, 0, 0.34),
-      0 0 0 1px rgba(131, 242, 143, 0.28);
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 22px 40px rgba(0, 0, 0, 0.34),
+      0 0 0 1px rgba(131, 242, 143, 0.22),
+      0 0 32px rgba(131, 242, 143, 0.18);
   }
 
   .contact-fab-toggle[aria-expanded="true"] {
     transform: translateY(-1px) scale(1.05);
+    border-color: rgba(131, 242, 143, 0.4);
     box-shadow:
-      0 20px 38px rgba(0, 0, 0, 0.36),
-      0 0 0 1px rgba(131, 242, 143, 0.34),
-      0 0 0 0.35rem rgba(131, 242, 143, 0.12);
+      inset 0 1px 0 rgba(255, 255, 255, 0.14),
+      0 22px 42px rgba(0, 0, 0, 0.36),
+      0 0 0 1px rgba(131, 242, 143, 0.28),
+      0 0 0 0.38rem rgba(131, 242, 143, 0.1),
+      0 0 36px rgba(131, 242, 143, 0.22);
   }
 
   .contact-fab-toggle[aria-expanded="true"]::before {
@@ -2539,11 +2584,11 @@ textarea:focus-visible,
   }
 
   .contact-fab-toggle[aria-expanded="true"] .contact-fab-icon {
-    transform: scale(1.08);
+    transform: scale(1.06) translateY(-1px);
   }
 
   .contact-fab-toggle[aria-expanded="true"] .contact-fab-icon svg {
-    transform: scale(0.94);
+    transform: scale(0.96);
   }
 
   .contact-panel {
