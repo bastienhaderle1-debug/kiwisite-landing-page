@@ -270,12 +270,15 @@
         summary.addEventListener("click", function (event) {
           if (mobileQuery.matches) return;
           event.preventDefault();
-          card.classList.toggle("is-desktop-expanded");
+          const nextExpanded = !card.classList.contains("is-desktop-expanded");
+          cards.forEach(function (otherCard) {
+            otherCard.classList.toggle("is-desktop-expanded", nextExpanded);
+          });
           track("offer_desktop_details_toggle", {
             offer:
               card.getAttribute("data-offer-name") ||
               (card.querySelector(".offer-name") ? card.querySelector(".offer-name").textContent.trim() : ""),
-            expanded: card.classList.contains("is-desktop-expanded")
+            expanded: nextExpanded
           });
         });
       }
@@ -559,7 +562,7 @@
 
   function initSceneCardsInteraction() {
     const mediaQuery = window.matchMedia("(min-width: 750px) and (pointer: fine)");
-    const cards = document.querySelectorAll(".scene-card");
+    const cards = document.querySelectorAll(".scene-card, .offer-mini-visual");
     if (!cards.length || !mediaQuery.matches) return;
 
     function clamp(value, min, max) {
@@ -568,6 +571,7 @@
 
     cards.forEach(function (card) {
       const baseZ = parseFloat(card.getAttribute("data-base-z") || "0");
+      const isOfferMiniCard = card.classList.contains("offer-mini-visual");
       const state = {
         dragging: false,
         spinning: false,
@@ -592,8 +596,16 @@
         velocityX: 0,
         velocityY: 0,
         dragDistance: 0,
-        frameId: 0
+        frameId: 0,
+        returnTimerId: 0
       };
+
+      function clearReturnTimer() {
+        if (state.returnTimerId) {
+          window.clearTimeout(state.returnTimerId);
+          state.returnTimerId = 0;
+        }
+      }
 
       function stopMomentum() {
         if (state.frameId) {
@@ -614,6 +626,62 @@
         card.style.setProperty("--card-x", rotateX + "deg");
         card.style.setProperty("--card-y", rotateY + "deg");
         card.style.setProperty("--card-scale", String(scale));
+      }
+
+      function startMagneticReturn() {
+        stopMomentum();
+        state.dragging = false;
+        state.pointerId = null;
+        card.classList.remove("is-dragging");
+
+        function tick() {
+          state.hoverX *= 0.88;
+          state.hoverY *= 0.88;
+          state.dragX *= 0.84;
+          state.dragY *= 0.84;
+          state.dragRotateX *= 0.84;
+          state.dragRotateY *= 0.84;
+          state.dragSpin *= 0.84;
+          state.spinX *= 0.82;
+          state.spinY *= 0.82;
+          state.spinZ *= 0.82;
+          state.wobbleX *= 0.8;
+          state.wobbleY *= 0.8;
+
+          applyTransform();
+
+          if (
+            Math.abs(state.hoverX) < 0.08 &&
+            Math.abs(state.hoverY) < 0.08 &&
+            Math.abs(state.dragX) < 0.08 &&
+            Math.abs(state.dragY) < 0.08 &&
+            Math.abs(state.dragRotateX) < 0.08 &&
+            Math.abs(state.dragRotateY) < 0.08 &&
+            Math.abs(state.dragSpin) < 0.08 &&
+            Math.abs(state.spinX) < 0.08 &&
+            Math.abs(state.spinY) < 0.08 &&
+            Math.abs(state.spinZ) < 0.08 &&
+            Math.abs(state.wobbleX) < 0.08 &&
+            Math.abs(state.wobbleY) < 0.08
+          ) {
+            settleToRest();
+            return;
+          }
+
+          state.frameId = window.requestAnimationFrame(tick);
+        }
+
+        state.frameId = window.requestAnimationFrame(tick);
+      }
+
+      function scheduleMagneticReturn() {
+        clearReturnTimer();
+        state.returnTimerId = window.setTimeout(function () {
+          state.returnTimerId = 0;
+          if (!state.dragging) {
+            startMagneticReturn();
+          }
+        }, 2000);
       }
 
       function updateFromPointer(clientX, clientY, multiplier) {
@@ -670,6 +738,13 @@
         state.pointerId = null;
         card.classList.remove("is-dragging");
         applyTransform();
+      }
+
+      if (isOfferMiniCard) {
+        card.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        });
       }
 
       function startMomentum() {
@@ -754,26 +829,33 @@
       }
 
       card.addEventListener("pointermove", function (event) {
+        clearReturnTimer();
         if (state.dragging && event.pointerId === state.pointerId) {
           updateFromPointer(event.clientX, event.clientY, 2);
         } else if (!state.dragging) {
           updateFromPointer(event.clientX, event.clientY, 1);
         }
+        scheduleMagneticReturn();
       });
 
       card.addEventListener("pointerenter", function (event) {
+        clearReturnTimer();
         if (!state.dragging) {
           updateFromPointer(event.clientX, event.clientY, 1);
         }
+        scheduleMagneticReturn();
       });
 
       card.addEventListener("pointerleave", function () {
-        if (!state.dragging && !state.spinning) {
-          settleToRest();
-        }
+        scheduleMagneticReturn();
       });
 
       card.addEventListener("pointerdown", function (event) {
+        clearReturnTimer();
+        if (isOfferMiniCard) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
         stopMomentum();
         state.dragging = true;
         state.pointerId = event.pointerId;
@@ -801,15 +883,28 @@
       });
 
       card.addEventListener("pointerup", function (event) {
+        if (isOfferMiniCard) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
         if (card.releasePointerCapture && state.pointerId === event.pointerId) {
           try {
             card.releasePointerCapture(event.pointerId);
           } catch (_err) {}
         }
         startMomentum();
+        scheduleMagneticReturn();
       });
 
-      card.addEventListener("pointercancel", settleToRest);
+      card.addEventListener("pointercancel", function (event) {
+        clearReturnTimer();
+        if (isOfferMiniCard) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        settleToRest();
+        scheduleMagneticReturn();
+      });
     });
   }
 
@@ -972,6 +1067,72 @@
     });
   }
 
+  function initOfferGuaranteeTilt() {
+    const panel = document.querySelector("[data-offer-guarantee-tilt]");
+    if (!panel) return;
+
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const desktopQuery = window.matchMedia("(min-width: 720px)");
+    const finePointerQuery = window.matchMedia("(pointer: fine)");
+    if (reducedMotionQuery.matches || !desktopQuery.matches || !finePointerQuery.matches) return;
+
+    const state = {
+      currentX: 0,
+      currentY: 0,
+      targetX: 0,
+      targetY: 0,
+      glowX: 50,
+      glowY: 10,
+      rafId: 0
+    };
+
+    function render() {
+      state.currentX += (state.targetX - state.currentX) * 0.12;
+      state.currentY += (state.targetY - state.currentY) * 0.12;
+
+      panel.style.setProperty("--guarantee-tilt-x", state.currentX.toFixed(2) + "deg");
+      panel.style.setProperty("--guarantee-tilt-y", state.currentY.toFixed(2) + "deg");
+      panel.style.setProperty("--guarantee-glow-x", state.glowX.toFixed(2) + "%");
+      panel.style.setProperty("--guarantee-glow-y", state.glowY.toFixed(2) + "%");
+
+      const shouldContinue =
+        Math.abs(state.currentX - state.targetX) > 0.02 ||
+        Math.abs(state.currentY - state.targetY) > 0.02;
+
+      if (shouldContinue) {
+        state.rafId = window.requestAnimationFrame(render);
+      } else {
+        state.rafId = 0;
+      }
+    }
+
+    function requestRender() {
+      if (!state.rafId) {
+        state.rafId = window.requestAnimationFrame(render);
+      }
+    }
+
+    panel.addEventListener("pointermove", function (event) {
+      const rect = panel.getBoundingClientRect();
+      const px = (event.clientX - rect.left) / rect.width;
+      const py = (event.clientY - rect.top) / rect.height;
+
+      state.targetX = (0.5 - py) * 8;
+      state.targetY = (px - 0.5) * 10;
+      state.glowX = px * 100;
+      state.glowY = py * 100;
+      requestRender();
+    });
+
+    panel.addEventListener("pointerleave", function () {
+      state.targetX = 0;
+      state.targetY = 0;
+      state.glowX = 50;
+      state.glowY = 10;
+      requestRender();
+    });
+  }
+
   initSmoothScroll();
   initNavSectionHighlight();
   initFaqAccordion();
@@ -984,5 +1145,6 @@
   initStripeLinksTracking();
   initBrandSignature();
   initContactPanelTilt();
+  initOfferGuaranteeTilt();
   initSceneCardsInteraction();
 })();
