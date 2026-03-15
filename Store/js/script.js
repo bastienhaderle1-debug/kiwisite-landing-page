@@ -561,9 +561,10 @@
   }
 
   function initSceneCardsInteraction() {
-    const mediaQuery = window.matchMedia("(min-width: 750px) and (pointer: fine)");
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const desktopFinePointerQuery = window.matchMedia("(min-width: 750px) and (pointer: fine)");
     const cards = document.querySelectorAll(".scene-card, .offer-mini-visual");
-    if (!cards.length || !mediaQuery.matches) return;
+    if (!cards.length || reducedMotionQuery.matches) return;
 
     function clamp(value, min, max) {
       return Math.max(min, Math.min(max, value));
@@ -572,6 +573,8 @@
     cards.forEach(function (card) {
       const baseZ = parseFloat(card.getAttribute("data-base-z") || "0");
       const isOfferMiniCard = card.classList.contains("offer-mini-visual");
+      if (!isOfferMiniCard && !desktopFinePointerQuery.matches) return;
+
       const state = {
         dragging: false,
         spinning: false,
