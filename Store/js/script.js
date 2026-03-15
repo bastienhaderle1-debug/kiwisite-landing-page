@@ -573,6 +573,9 @@
       pointerId: null,
       startX: 0,
       startOffset: 0,
+      lastPointerX: 0,
+      lastPointerTime: 0,
+      pointerVelocityX: 0,
       offsets: pills.map(function () {
         return 0;
       }),
@@ -585,6 +588,9 @@
       widths: [],
       baseCenters: [],
       gap: 10,
+      trackStart: 0,
+      trackEnd: 0,
+      activeContacts: new Set(),
       rafId: 0,
       returnTimerId: 0
     };
@@ -597,6 +603,8 @@
     }
 
     function measure() {
+      const hero = group.closest(".offers-hero");
+      const heroVisual = hero ? hero.querySelector(".hero-visual") : null;
       const groupRect = group.getBoundingClientRect();
       const styles = window.getComputedStyle(group);
       const parsedGap = parseFloat(styles.columnGap || styles.gap || "10");
@@ -608,6 +616,29 @@
         const rect = pill.getBoundingClientRect();
         return rect.left - groupRect.left + rect.width / 2;
       });
+
+      const firstIndex = 0;
+      const lastIndex = pills.length - 1;
+      const contentStart = state.baseCenters[firstIndex] - state.widths[firstIndex] / 2;
+      const contentEnd = state.baseCenters[lastIndex] + state.widths[lastIndex] / 2;
+      const contentWidth = contentEnd - contentStart;
+      const freeLeft = Math.max(0, contentStart);
+      let rightBoundary = group.clientWidth;
+
+      if (heroVisual) {
+        const heroVisualRect = heroVisual.getBoundingClientRect();
+        const heroVisualStyles = window.getComputedStyle(heroVisual);
+        if (heroVisualStyles.display !== "none") {
+          rightBoundary = Math.max(group.clientWidth, heroVisualRect.left - groupRect.left - 18);
+        }
+      }
+
+      const freeRight = Math.max(0, rightBoundary - contentEnd);
+      const rightSlack = freeRight;
+      const leftSlack = Math.min(freeLeft, Math.max(16, Math.min(28, contentWidth * 0.08)));
+
+      state.trackStart = Math.max(0, contentStart - leftSlack);
+      state.trackEnd = Math.max(contentEnd, contentEnd + rightSlack);
     }
 
     function requestRender() {
@@ -666,11 +697,12 @@
       const centers = state.baseCenters.map(function (center) {
         return center;
       });
+      const nextActiveContacts = new Set();
       const minCenter = state.widths.map(function (width) {
-        return width / 2;
+        return state.trackStart + width / 2;
       });
       const maxCenter = state.widths.map(function (width) {
-        return Math.max(width / 2, group.clientWidth - width / 2);
+        return Math.max(state.trackStart + width / 2, state.trackEnd - width / 2);
       });
 
       centers[draggedIndex] = Math.max(
@@ -681,23 +713,39 @@
       for (let pass = 0; pass < pills.length * 4; pass += 1) {
         for (let index = 0; index < centers.length - 1; index += 1) {
           const nextIndex = index + 1;
-          const overlapAllowance = Math.min(
-            state.gap + Math.min(state.widths[index], state.widths[nextIndex]) * 0.12,
-            Math.min(state.widths[index], state.widths[nextIndex]) * 0.18
-          );
-          const minDistance =
-            (state.widths[index] + state.widths[nextIndex]) / 2 + state.gap - overlapAllowance;
+          const contactKey = index + ":" + nextIndex;
+          const minDistance = (state.widths[index] + state.widths[nextIndex]) / 2 + state.gap;
           const distance = centers[nextIndex] - centers[index];
           if (distance >= minDistance) continue;
 
+          nextActiveContacts.add(contactKey);
           const overlap = minDistance - distance;
+          const isNewContact = !state.activeContacts.has(contactKey);
+          if (isNewContact) {
+            const impact = Math.min(
+              4.8,
+              0.8 + overlap * 0.22 + Math.min(2.6, Math.abs(state.pointerVelocityX) * 24)
+            );
+
+            if (index === draggedIndex) {
+              state.velocities[nextIndex] += impact;
+              state.velocities[index] -= impact * 0.28;
+            } else if (nextIndex === draggedIndex) {
+              state.velocities[index] -= impact;
+              state.velocities[nextIndex] += impact * 0.28;
+            } else {
+              state.velocities[index] -= impact * 0.5;
+              state.velocities[nextIndex] += impact * 0.5;
+            }
+          }
+
           if (index === draggedIndex) {
-            centers[nextIndex] += overlap * 0.92;
+            centers[nextIndex] += overlap;
           } else if (nextIndex === draggedIndex) {
-            centers[index] -= overlap * 0.92;
+            centers[index] -= overlap;
           } else {
-            centers[index] -= overlap * 0.38;
-            centers[nextIndex] += overlap * 0.38;
+            centers[index] -= overlap * 0.5;
+            centers[nextIndex] += overlap * 0.5;
           }
         }
 
@@ -721,11 +769,18 @@
       state.targetOffsets = centers.map(function (center, index) {
         return center - state.baseCenters[index];
       });
+      state.activeContacts = nextActiveContacts;
       requestRender();
     }
 
     function onPointerMove(event) {
       if (event.pointerId !== state.pointerId || state.dragIndex === -1) return;
+      const now = performance.now();
+      const dt = state.lastPointerTime ? Math.max(16, now - state.lastPointerTime) : 16;
+      const dx = event.clientX - state.lastPointerX;
+      state.pointerVelocityX = dx / dt;
+      state.lastPointerX = event.clientX;
+      state.lastPointerTime = now;
       const deltaX = event.clientX - state.startX;
       resolveTargets(state.dragIndex, state.startOffset + deltaX);
     }
@@ -736,6 +791,8 @@
       const pill = pills[dragIndex];
       state.dragIndex = -1;
       state.pointerId = null;
+      state.pointerVelocityX = 0;
+      state.activeContacts.clear();
       pill.classList.remove("is-dragging");
       state.velocities[dragIndex] *= 0.35;
       if (pill.hasPointerCapture(event.pointerId)) {
@@ -755,6 +812,10 @@
         state.pointerId = event.pointerId;
         state.startX = event.clientX;
         state.startOffset = state.targetOffsets[index];
+        state.lastPointerX = event.clientX;
+        state.lastPointerTime = performance.now();
+        state.pointerVelocityX = 0;
+        state.activeContacts.clear();
         state.velocities[index] = 0;
         pill.classList.add("is-dragging");
         pill.setPointerCapture(event.pointerId);
@@ -767,6 +828,8 @@
         if (state.dragIndex !== index) return;
         state.dragIndex = -1;
         state.pointerId = null;
+        state.pointerVelocityX = 0;
+        state.activeContacts.clear();
         pill.classList.remove("is-dragging");
         scheduleReturn();
       });
@@ -783,6 +846,8 @@
       state.velocities = state.velocities.map(function () {
         return 0;
       });
+      state.pointerVelocityX = 0;
+      state.activeContacts.clear();
       requestRender();
     });
 
